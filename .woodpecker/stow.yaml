@@ -1,0 +1,14 @@
+when:
+    event: 
+        - push
+        - manual
+    branch: main
+
+steps:
+    build:
+        image: rust
+        commands: 
+            - apt update
+            - apt install -y stow
+            - stow .
+
