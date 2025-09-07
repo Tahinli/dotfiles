@@ -10,6 +10,7 @@ return {
                 "pyright",
                 "cssls",
                 "html",
+                "ts_ls",
             },
         })
     end,

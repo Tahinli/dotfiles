@@ -39,3 +39,12 @@ Unmute
 f32
 Deserialization
 Deserialize
+QUIC
+async
+postgres
+postgresql
+io
+sqlx
+db
+surrealdb
+auth

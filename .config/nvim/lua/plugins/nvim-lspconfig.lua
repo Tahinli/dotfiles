@@ -37,5 +37,6 @@ return {
         })
         lspconfig["cssls"].setup({ capabilities = capabilities })
         lspconfig["html"].setup({ capabilities = capabilities })
+        lspconfig["ts_ls"].setup({ capabilities = capabilities })
     end
 }
