@@ -17,7 +17,8 @@ vim.keymap.set("n", ";", require("fzf-lua").diagnostics_workspace, {})
 
 
 vim.keymap.set({ "n", "i", "v" }, "<C-s>", format_and_save)
-vim.keymap.set({ "n", "v" }, "<CR>", "<cmd>Yazi<CR>", { noremap = true, silent = true, })
+vim.keymap.set({ "n", "v" }, "-", "<cmd>Oil<CR>", { noremap = true, silent = true, })
+-- terminal exit close remap
 vim.keymap.set("t", "<ESC>e", "<C-\\><C-n>", { noremap = true })
 
 vim.keymap.set("n", "<F5>", function() require("dap").continue() end)

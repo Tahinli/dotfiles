@@ -1,6 +1,6 @@
 return {
     "saghen/blink.cmp",
-    version = '*',
+    build = "cargo build --release",
     opts = {
         keymap = {
             ["<cr>"] = { "accept", "fallback" },
@@ -34,6 +34,6 @@ return {
         },
         signature = {
             enabled = true,
-        }
+        },
     },
 }

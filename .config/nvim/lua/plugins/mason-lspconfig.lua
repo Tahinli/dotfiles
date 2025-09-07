@@ -9,6 +9,7 @@ return {
                 "ruff",
                 "pyright",
                 "cssls",
+                "html",
             },
         })
     end,

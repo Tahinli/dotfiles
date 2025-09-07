@@ -18,3 +18,4 @@ vim.lsp.inlay_hint.enable()
 vim.g.loaded_netrwPlugin = 0
 
 vim.opt.termguicolors = true
+vim.opt.splitright = true
