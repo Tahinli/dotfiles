@@ -1,0 +1,5 @@
+
+[Default Applications]
+image=org.gnome.Loupe.desktop
+image/jpeg=org.gnome.Loupe.desktop
+image/png=org.gnome.Loupe.desktop
