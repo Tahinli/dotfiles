@@ -1,0 +1,163 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 24,
+  "spacing": 16,
+  "modules-left": ["hyprland/workspaces", "mpris"],
+  "modules-center": ["clock"],
+  "modules-right": ["privacy", "cpu", "memory", "wireplumber", "tray", "battery"],
+
+  "cava": {
+          "framerate": 30,
+          "autosens": 1,
+          "sensitivity": 100,
+          "bars": 14,
+          "lower_cutoff_freq": 50,
+          "higher_cutoff_freq": 10000,
+          "method": "pulse",
+          "source": "auto",
+          "stereo": true,
+          "reverse": false,
+          "bar_delimiter": 0,
+          "monstercat": false,
+          "waves": false,
+          "noise_reduction": 0.77,
+          "input_delay": 2,
+          "format-icons" : ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" ],
+          "actions": {
+                     "on-click-right": "mode"
+                     }
+      },
+
+  "wlr/taskbar": {
+      "format": "{icon}",
+      "icon-size": 14,
+      "icon-theme": "Numix-Circle",
+      "tooltip-format": "{title}",
+      "on-click": "activate",
+      "on-click-middle": "close",
+      "ignore-list": [
+         "Alacritty"
+      ],
+      "app_ids-mapping": {
+        "firefoxdeveloperedition": "firefox-developer-edition"
+      },
+      "rewrite": {
+          "Firefox Web Browser": "Firefox",
+          "Foot Server": "Terminal"
+      }
+  },
+  
+  "pulseaudio/slider": {
+      "min": 0,
+      "max": 100,
+      "orientation": "horizontal"
+  },
+
+  "privacy": {
+  	"icon-spacing": 4,
+  	"icon-size": 18,
+  	"transition-duration": 250,
+  	"modules": [
+  		{
+  			"type": "screenshare",
+  			"tooltip": true,
+  			"tooltip-icon-size": 24
+  		},
+  		{
+  			"type": "audio-out",
+  			"tooltip": true,
+  			"tooltip-icon-size": 24
+  		},
+  		{
+  			"type": "audio-in",
+  			"tooltip": true,
+  			"tooltip-icon-size": 24
+  		}
+  	]
+  },
+
+  "mpris": {
+    "interval": 1,
+  	"format": " {player_icon} {dynamic}",
+  	"format-paused": "{status_icon} <i>{dynamic}</i>",
+  	"player-icons": {
+  		"default": "▶",
+  		"mpv": "🎵"
+  	},
+  	"status-icons": {
+  		"paused": "⏸"
+  	},
+  	// "ignored-players": ["firefox"]
+  },
+
+  "wireplumber": {
+    "format": "{icon} {volume}% ",
+	"on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+    "format-icons": ["", "", ""],
+    "on-click-right": "pavucontrol",
+    "format-muted": "\uf00d {volume}%"
+  },
+ 
+  "hyprland/workspaces": {
+  	"format": "{icon}",
+  	"active-only": true
+  },
+  "hyprland/window": {
+    "format": "{title}"
+  },
+  "idle_inhibitor": {
+    "format": "{icon}",
+    "format-icons": {
+      "activated": "\uf06e",
+      "deactivated": "\uf070"
+    }
+  },
+  "network": {
+  	"interface": "enp4s0f4u2u1c2",
+  	"format": "{ifname}",
+  	"format-wifi": "{essid} ({signalStrength}%) ",
+  	"format-ethernet": "{ifname} ",
+  	"format-disconnected": "", //An empty format will hide the module.
+  	"format-disconnected": "",
+  	"tooltip-format": "{ifname}",
+  	"tooltip-format-wifi": "{essid} ({signalStrength}%) ",
+  	"tooltip-format-ethernet": "{ifname} ",
+  	"tooltip-format-disconnected": "Disconnected",
+  	"max-length": 50
+  },
+  "cpu": { 
+    "interval": 1, 
+    "format": "{usage}%" 
+  },
+  "memory": {
+    "interval": 1,
+    "format": "{used:0.1f}"
+  },
+  
+  "clock": {
+  "interval" : 1,
+    "format": "{:%H:%M:%S | %A, %B %d, %Y }",
+    "format-alt": "{:%H:%M:%S}",
+    "tooltip-format": "<tt><small>{calendar}</small></tt>",
+    "calendar": {
+      "format": {
+        "months": "<span color='#ffead3'><b>{}</b></span>",
+        "today": "<span color='#ff6699'><b>{}</b></span>"
+      }
+    }
+  },
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-icons": {
+      "default": ["\uf026", "\uf027", "\uf028"]
+    },
+    "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+    "on-click-right": "pavucontrol",
+    "format-muted": "\uf00d {volume}%"
+  },
+  "tray": {
+    "icon-size": 20,
+    "spacing": 10
+  }
+}
