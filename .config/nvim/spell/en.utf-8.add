@@ -28,3 +28,6 @@ configs
 pem
 ico
 css
+WASM
+RTC
+Auth

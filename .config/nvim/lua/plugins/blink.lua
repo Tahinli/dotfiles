@@ -12,7 +12,7 @@ return {
         },
         completion = {
             ghost_text = {
-                enabled = true,
+                enabled = false,
             },
             list = {
                 selection = {
@@ -22,9 +22,10 @@ return {
             },
             documentation = {
                 auto_show = true,
-                auto_show_delay_ms = 1000,
+                auto_show_delay_ms = 300,
             },
             menu = {
+                auto_show = true,
                 draw = {
                     treesitter = {
                         "lsp"
