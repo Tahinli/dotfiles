@@ -93,7 +93,7 @@
 
   "wireplumber": {
     "format": "{icon} {volume}% ",
-	"on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+	"on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
     "format-icons": ["", "", ""],
     "on-click-right": "pavucontrol",
     "format-muted": "\uf00d {volume}%"
