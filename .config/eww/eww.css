@@ -1,0 +1,8 @@
+* {
+    all: unset;
+}
+
+.bar {
+    background-color: black;
+    color: white;
+}
