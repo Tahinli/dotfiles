@@ -47,14 +47,14 @@
    `bash ~/.config/scripts/memory_status.sh`)
 
 ;; Audio volume
-(defpoll volume :interval "0ms"
+(defpoll volume :interval "500ms"
    `wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null | awk '{printf "%.0f", $2*100}' || echo "0"`)
 
-(defpoll volume-muted :interval "0ms"
+(defpoll volume-muted :interval "500ms"
    `wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null | grep -q MUTED && echo "true" || echo "false"`)
 
 ;; Volume info - includes song details for tooltip
-(defpoll volume-info :interval "0ms"
+(defpoll volume-info :interval "500ms"
    `bash ~/.config/scripts/volume_info.sh`)
 
 ;; DateTime info - shows date/time and system uptime for tooltip
@@ -139,19 +139,19 @@
            :class "tooltip-text")
     (eventbox
       (label :class "memory"
-             :text {mem-usage < 5 ? "◼ ${mem-usage}" :
-                    mem-usage < 10 ? "◼◼ ${mem-usage}" :
-                    mem-usage < 15 ? "◼◼◼ ${mem-usage}" :
-                    mem-usage < 20 ? "◼◼◼◼ ${mem-usage}" :
-                    mem-usage < 25 ? "◼◼◼◼◼ ${mem-usage}" :
-                    mem-usage < 30 ? "◼◼◼◼◼◼ ${mem-usage}" :
-                    mem-usage < 40 ? "◼◼◼◼◼◼◼ ${mem-usage}" :
-                    mem-usage < 50 ? "◼◼◼◼◼◼◼◼ ${mem-usage}" :
-                    mem-usage < 60 ? "◼◼◼◼◼◼◼◼◼ ${mem-usage}" :
-                    mem-usage < 70 ? "◼◼◼◼◼◼◼◼◼◼ ${mem-usage}" :
-                    mem-usage < 80 ? "◼◼◼◼◼◼◼◼◼◼◼ ${mem-usage}" :
-                    mem-usage < 90 ? "◼◼◼◼◼◼◼◼◼◼◼◼ ${mem-usage}" :
-                    "◼◼◼◼◼◼◼◼◼◼◼◼◼ ${mem-usage}"}))))
+             :text {mem-usage < 5 ? "▁ ${mem-usage}" :
+                    mem-usage < 10 ? "▂ ${mem-usage}" :
+                    mem-usage < 15 ? "▃ ${mem-usage}" :
+                    mem-usage < 20 ? "▄ ${mem-usage}" :
+                    mem-usage < 25 ? "▅ ${mem-usage}" :
+                    mem-usage < 30 ? "▆ ${mem-usage}" :
+                    mem-usage < 40 ? "▆ ${mem-usage}" :
+                    mem-usage < 50 ? "▇ ${mem-usage}" :
+                    mem-usage < 60 ? "▇ ${mem-usage}" :
+                    mem-usage < 70 ? "▇ ${mem-usage}" :
+                    mem-usage < 80 ? "█ ${mem-usage}" :
+                    mem-usage < 90 ? "█ ${mem-usage}" :
+                    "█ ${mem-usage}"}))))
 
 ;; Network widget
 (defwidget network-widget []
