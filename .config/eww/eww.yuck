@@ -1,37 +1,266 @@
-(defvar time-visible false)
-(defpoll time :interval "1s"
-              :initial "initial-value"
-              :run-while time-visible
-`date +%x' | '%H:%M:%S`)
-(defvar byte_transform 1073741824) ;; 1024*1024*1024
+;; Eww configuration - Bar matching waybar setup
+;; Using proper tooltip widget for tooltip display
 
-(defwidget bar []        
-            (box :orientation "h"
-                 :class "bar"
-                 :spacing 0
-                 :valign "center"
-            (label :text time)
-            (label :text {round(EWW_CPU.avg, 2)})
-            (label :text {round(EWW_RAM.used_mem/byte_transform, 2)})
-            (systray    :icon-size 20
-                        :space-evenly false
-                        :spacing 0
-            )
-            (label :text "${EWW_BATTERY.BATT.capacity} | ${EWW_BATTERY.BATT.status}")
-))
+;; ============================================================================
+;; Variables and Polls
+;; ============================================================================
+
+(defpoll time :interval "1s"
+   `date '+%H:%M:%S'`)
+
+(defpoll date :interval "1s"
+   `date '+%A, %B %d, %Y'`)
+
+(defvar time-format-full true)
+
+(defvar byte_transform 1073741824)
+
+;; Music/Player info - using song_detail.sh script
+(defpoll music :interval "1s"
+   `bash ~/.config/scripts/song_detail.sh`)
+
+(defpoll music-status :interval "1s"
+   `playerctl status 2>/dev/null || echo "Stopped"`)
+
+;; Privacy status - monitors screen sharing, audio input/output
+(defpoll privacy :interval "1s"
+   `bash ~/.config/scripts/privacy_status.sh status`)
+
+(defpoll privacy-details :interval "1s"
+   `bash ~/.config/scripts/privacy_status.sh details`)
+
+;; CPU usage
+(defpoll cpu-usage :interval "1s"
+   `top -bn1 2>/dev/null | grep "Cpu(s)" | awk '{print int($2)}' || echo "0"`)
+
+(defpoll cpu-status :interval "1s"
+   `bash ~/.config/scripts/cpu_status.sh`)
+
+;; Memory usage
+(defpoll mem-usage :interval "1s"
+   `free -b 2>/dev/null | awk 'NR==2 {printf "%.1f", $3/1073741824}' || echo "0"`)
+
+(defpoll mem-total :interval "1s"
+   `free -b 2>/dev/null | awk 'NR==2 {printf "%.1f", $2/1073741824}' || echo "0"`)
+
+(defpoll memory-status :interval "1s"
+   `bash ~/.config/scripts/memory_status.sh`)
+
+;; Audio volume
+(defpoll volume :interval "0ms"
+   `wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null | awk '{printf "%.0f", $2*100}' || echo "0"`)
+
+(defpoll volume-muted :interval "0ms"
+   `wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null | grep -q MUTED && echo "true" || echo "false"`)
+
+;; Volume info - includes song details for tooltip
+(defpoll volume-info :interval "0ms"
+   `bash ~/.config/scripts/volume_info.sh`)
+
+;; DateTime info - shows date/time and system uptime for tooltip
+(defpoll datetime-info :interval "1s"
+   `bash ~/.config/scripts/datetime_info.sh`)
+
+;; Network speed - shows current download/upload speeds for bar display
+(defpoll network-speed :interval "1s"
+   `bash ~/.config/scripts/network_speed.sh`)
+
+;; Network status - shows network activity for tooltip
+(defpoll network-status :interval "1s"
+   `bash ~/.config/scripts/network_status.sh`)
+
+;; Battery
+(defpoll battery-capacity :interval "5s"
+  `cat /sys/class/power_supply/BAT*/capacity 2>/dev/null | head -1 || echo "N/A"`)
+
+(defpoll battery-status :interval "5s"
+  `cat /sys/class/power_supply/BAT*/status 2>/dev/null | head -1 || echo "N/A"`)
+
+;; Battery info - detailed tooltip
+(defpoll battery-info :interval "5s"
+  `bash ~/.config/scripts/battery_info.sh`)
+
+;; Active workspace
+(defpoll active-ws :interval "0ms"
+   `hyprctl activeworkspace -j 2>/dev/null | jq -r '.id' || echo "1"`)
+
+;; ============================================================================
+;; Widgets
+;; ============================================================================
+
+;; Workspace display (show only active)
+(defwidget workspaces-widget []
+  (eventbox
+    (label :class "workspace-item active"
+           :text active-ws)))
+
+;; Music widget - click to play/pause, right-click to show cover
+(defwidget music-widget []
+   (eventbox :onclick "playerctl play-pause"
+             :onrightclick "bash ~/.config/scripts/show_cover.sh"
+             :class "music-box"
+     (label :text music)))
+
+;; Clock widget - left-click to toggle format, right-click to open calendar
+(defwidget clock-widget []
+  (tooltip
+    (label :text datetime-info
+           :class "tooltip-text")
+    (eventbox :onclick "eww update time-format-full=${time-format-full == "true" ? "false" : "true"}"
+              :onrightclick "gnome-calendar 2>/dev/null || zenity --calendar 2>/dev/null || notify-send 'Calendar' '${date}'"
+              :class "clock"
+      (label :text {time-format-full == "true" ? "${time} | ${date}" : time}))))
+
+;; Privacy widget - shows indicators only when active
+(defwidget privacy-widget []
+  (box :visible {privacy != ""}
+       :space-evenly false
+       :spacing 4
+    (tooltip
+      (label :text privacy-details
+             :class "tooltip-text")
+      (eventbox
+        (label :class "privacy"
+               :text privacy)))))
+
+;; CPU widget
+(defwidget cpu-widget []
+  (tooltip
+    (label :text cpu-status
+           :class "tooltip-text")
+    (eventbox
+      (label :class "cpu"
+             :text "⚙ ${cpu-usage}%"))))
+
+;; Memory widget - horizontal bars indicator (thin)
+(defwidget memory-widget []
+  (tooltip
+    (label :text memory-status
+           :class "tooltip-text")
+    (eventbox
+      (label :class "memory"
+             :text {mem-usage < 5 ? "◼ ${mem-usage}" :
+                    mem-usage < 10 ? "◼◼ ${mem-usage}" :
+                    mem-usage < 15 ? "◼◼◼ ${mem-usage}" :
+                    mem-usage < 20 ? "◼◼◼◼ ${mem-usage}" :
+                    mem-usage < 25 ? "◼◼◼◼◼ ${mem-usage}" :
+                    mem-usage < 30 ? "◼◼◼◼◼◼ ${mem-usage}" :
+                    mem-usage < 40 ? "◼◼◼◼◼◼◼ ${mem-usage}" :
+                    mem-usage < 50 ? "◼◼◼◼◼◼◼◼ ${mem-usage}" :
+                    mem-usage < 60 ? "◼◼◼◼◼◼◼◼◼ ${mem-usage}" :
+                    mem-usage < 70 ? "◼◼◼◼◼◼◼◼◼◼ ${mem-usage}" :
+                    mem-usage < 80 ? "◼◼◼◼◼◼◼◼◼◼◼ ${mem-usage}" :
+                    mem-usage < 90 ? "◼◼◼◼◼◼◼◼◼◼◼◼ ${mem-usage}" :
+                    "◼◼◼◼◼◼◼◼◼◼◼◼◼ ${mem-usage}"}))))
+
+;; Network widget
+(defwidget network-widget []
+  (tooltip
+    (label :text network-status
+           :class "tooltip-text")
+    (eventbox
+      (label :class "network"
+             :text network-speed))))
+
+;; Volume widget - sine wave icon
+(defwidget volume-widget []
+  (tooltip
+    (label :text volume-info
+           :class "tooltip-text")
+    (eventbox :onclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+              :onrightclick "pavucontrol &"
+              :class {volume-muted == "true" ? "volume muted" : "volume"}
+      (label :text {volume-muted == "true" ?
+                      "✕ ${volume}%" :
+                      "∿ ${volume}%"}))))
+
+;; Battery widget - only shows if battery exists
+(defwidget battery-widget []
+  (box :visible {battery-capacity != "N/A"}
+       :space-evenly false
+    (tooltip
+      (label :text battery-info
+             :class "tooltip-text")
+      (eventbox
+        (label :class {battery-status == "Charging" ? "battery charging" :
+                       battery-status == "Discharging" ? "battery discharging" :
+                       battery-status == "Full" ? "battery full" :
+                       "battery"}
+               :text {battery-capacity < 10 ? "▁ ${battery-capacity}%" :
+                      battery-capacity < 25 ? "▂ ${battery-capacity}%" :
+                      battery-capacity < 50 ? "▃ ${battery-capacity}%" :
+                      battery-capacity < 75 ? "▄ ${battery-capacity}%" :
+                      "▅ ${battery-capacity}%"})))))
+
+;; System tray
+(defwidget tray-widget []
+  (box :orientation "h"
+       :space-evenly false
+       :spacing 5
+       :class "tray"
+    (systray :icon-size 20
+             :space-evenly false
+             :spacing 5)))
+
+;; ============================================================================
+;; Main Bar Layout
+;; ============================================================================
+
+(defwidget bar []
+  (box :orientation "h"
+       :class "bar"
+       :spacing 16
+       :space-evenly false
+       :valign "center"
+       :height 30
+
+    ;; Left: Workspaces and Music
+    (box :orientation "h"
+         :space-evenly false
+         :spacing 20
+      (workspaces-widget)
+      (music-widget))
+
+    ;; Center: Clock (expanded)
+    (box :orientation "h"
+         :hexpand true
+         :halign "center"
+      (clock-widget))
+
+    ;; Right: Status and controls
+    (box :orientation "h"
+         :space-evenly false
+         :spacing 12
+      ;; Privacy indicators
+      (privacy-widget)
+
+      ;; Stats grouped with proper spacing
+      (box :orientation "h"
+           :space-evenly false
+           :spacing 12
+        (cpu-widget)
+        (memory-widget)
+        (network-widget)
+        (volume-widget)
+        (battery-widget))
+
+      ;; System tray
+      (tray-widget))))
+
+;; ============================================================================
+;; Main Window
+;; ============================================================================
 
 (defwindow main
-            :monitor 0
-            :geometry (geometry :x "0px"
-                                :y "0px"
-                                :width "99.9%"
-                                :height "30px"
-                                :anchor "top center")
-            :exclusive true
-            :stacking "fg"
-            :reserve (struts :distance "40px" :side "top")
-            :windowtype "dock"
-            :wm-ignore true
-(bar))
-
-
+  :monitor 0
+  :geometry (geometry :x "0px"
+                      :y "0px"
+                      :width "99.9%"
+                      :height "34px"
+                      :anchor "top center")
+  :exclusive true
+  :stacking "fg"
+  :reserve (struts :distance "40px" :side "top")
+  :windowtype "dock"
+  :wm-ignore true
+  (bar))

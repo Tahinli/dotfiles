@@ -3,7 +3,7 @@
   "position": "top",
   "height": 34,
   "spacing": 16,
-  "modules-left": ["hyprland/workspaces", "mpris"],
+  "modules-left": ["hyprland/workspaces", "custom/music"],
   "modules-center": ["clock"],
   "modules-right": ["privacy", "cpu", "memory", "wireplumber", "tray", "battery"],
 
@@ -47,7 +47,7 @@
           "Foot Server": "Terminal"
       }
   },
-  
+
   "pulseaudio/slider": {
       "min": 0,
       "max": 100,
@@ -77,18 +77,15 @@
   	]
   },
 
-  "mpris": {
+  "custom/music": {
+    "format": "{}",
+    "exec": "bash ~/.config/scripts/song_detail.sh",
+    "exec-if": "playerctl status &> /dev/null",
     "interval": 1,
-  	"format": " {player_icon} {dynamic}",
-  	"format-paused": "{status_icon} <i>{dynamic}</i>",
-  	"player-icons": {
-  		"default": "▶",
-  		"mpv": "🎵"
-  	},
-  	"status-icons": {
-  		"paused": "⏸"
-  	},
-  	// "ignored-players": ["firefox"]
+    "on-click": "playerctl play-pause",
+    "on-click-right": "bash ~/.config/scripts/show_cover.sh",
+    "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+",
+    "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
   },
 
   "wireplumber": {
@@ -98,7 +95,7 @@
     "on-click-right": "pavucontrol",
     "format-muted": "\uf00d {volume}%"
   },
- 
+
   "hyprland/workspaces": {
   	"format": "{icon}",
   	"active-only": true
@@ -126,15 +123,15 @@
   	"tooltip-format-disconnected": "Disconnected",
   	"max-length": 50
   },
-  "cpu": { 
-    "interval": 1, 
-    "format": "{usage}%" 
+  "cpu": {
+    "interval": 1,
+    "format": "{usage}%"
   },
   "memory": {
     "interval": 1,
     "format": "{used:0.1f}"
   },
-  
+
   "clock": {
   "interval" : 1,
     "format": "{:%H:%M:%S | %A, %B %d, %Y }",

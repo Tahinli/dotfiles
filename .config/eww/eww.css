@@ -1,8 +1,194 @@
 * {
     all: unset;
+    font-family: "FontAwesome", "Roboto", "Helvetica", "Arial", sans-serif;
+    font-size: 14px;
+}
+
+tooltip {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    border: 1px solid #444444;
+    border-radius: 6px;
+    padding: 10px 15px;
+    font-size: 12px;
+    font-family: "Monospace", "Courier New", monospace;
+    margin: 4px;
+}
+
+tooltip label {
+    background-color: transparent;
+    color: #ffffff;
+    padding: 0px;
+    margin: 0px;
 }
 
 .bar {
-    background-color: black;
-    color: white;
+    background-color: #000000;
+    color: #ffffff;
+    padding: 4px 12px;
+    border-radius: 0px;
+    border: none;
+    outline: none;
 }
+
+/* Workspaces */
+.workspaces {
+    margin: 0px;
+    padding: 0px;
+}
+
+.workspace-item {
+    min-width: 20px;
+    color: #666666;
+    padding: 0px;
+    margin: 0px 8px;
+}
+
+.workspace-item.active {
+    color: #ffffff;
+}
+
+.workspace-item.active:hover {
+    color: #cccccc;
+}
+
+/* Music */
+.music-box {
+    color: #ffffff;
+    margin: 0px 8px;
+    padding: 0px;
+}
+
+.music-box:hover {
+    color: #888888;
+}
+
+/* Clock */
+.clock {
+    color: #ffffff;
+    padding: 0px;
+    margin: 0px 16px;
+}
+
+.clock:hover {
+    color: #888888;
+}
+
+.clock label {
+    margin: 0px;
+    padding: 0px;
+}
+
+/* Privacy */
+.privacy {
+    color: #ffffff;
+    font-size: 18px;
+    margin: 0px 4px;
+    padding: 0px;
+}
+
+.privacy:hover {
+    color: #666666;
+}
+
+/* CPU */
+.cpu {
+    color: #ffffff;
+    margin: 0px 4px;
+    padding: 0px;
+}
+
+.cpu:hover {
+    color: #777777;
+}
+
+/* Memory */
+.memory {
+    color: #ffffff;
+    margin: 0px 4px;
+    padding: 0px;
+}
+
+.memory:hover {
+    color: #777777;
+}
+
+/* Network */
+.network {
+    color: #ffffff;
+    margin: 0px 4px;
+    padding: 0px;
+}
+
+.network:hover {
+    color: #777777;
+}
+
+/* Volume */
+.volume {
+    color: #ffffff;
+    padding: 0px;
+    margin: 0px 4px;
+}
+
+.volume:hover {
+    color: #777777;
+}
+
+.volume.muted {
+    color: #888888;
+    opacity: 0.8;
+    margin: 0px 4px;
+}
+
+.volume.muted:hover {
+    color: #555555;
+    opacity: 0.6;
+}
+
+/* Tray */
+.tray {
+    padding: 0px;
+    margin: 0px 4px;
+}
+
+/* Battery */
+.battery {
+    color: #ffffff;
+    padding: 0px;
+    margin: 0px 4px;
+}
+
+.battery.charging {
+    color: #ffffff;
+}
+
+.battery.charging:hover {
+    color: #777777;
+}
+
+.battery.discharging {
+    color: #ffffff;
+}
+
+.battery.discharging:hover {
+    color: #777777;
+}
+
+.battery.full {
+    color: #ffffff;
+}
+
+.battery.full:hover {
+    color: #777777;
+}
+
+/* Separators */
+.separator {
+    color: #444444;
+    margin: 0px 4px;
+    padding: 0px;
+    font-size: 12px;
+}
+
+/* Buttons */
