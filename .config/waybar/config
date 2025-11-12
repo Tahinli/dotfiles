@@ -79,13 +79,21 @@
 
   "custom/music": {
     "format": "{}",
-    "exec": "bash ~/.config/scripts/song_detail.sh",
+    "exec": "bash ~/.config/scripts/shared/song_detail.sh",
     "exec-if": "playerctl status &> /dev/null",
     "interval": 1,
     "on-click": "playerctl play-pause",
-    "on-click-right": "bash ~/.config/scripts/show_cover.sh",
+    "on-click-right": "bash ~/.config/scripts/shared/show_cover.sh",
     "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+",
     "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+  },
+
+  "custom/camera": {
+    "format": "{text}",
+    "exec": "bash ~/.config/scripts/waybar/camera_monitor.sh bar",
+    "interval": 1,
+    "return-type": "json",
+    "tooltip": true
   },
 
   "wireplumber": {
@@ -115,8 +123,7 @@
   	"format": "{ifname}",
   	"format-wifi": "{essid} ({signalStrength}%) ",
   	"format-ethernet": "{ifname} ",
-  	"format-disconnected": "", //An empty format will hide the module.
-  	"format-disconnected": "",
+  	"format-disconnected": "",
   	"tooltip-format": "{ifname}",
   	"tooltip-format-wifi": "{essid} ({signalStrength}%) ",
   	"tooltip-format-ethernet": "{ifname} ",
@@ -137,6 +144,7 @@
     "format": "{:%H:%M:%S | %A, %B %d, %Y }",
     "format-alt": "{:%H:%M:%S}",
     "tooltip-format": "<tt><small>{calendar}</small></tt>",
+    "on-click-right": "gnome-calendar",
     "calendar": {
       "format": {
         "months": "<span color='#ffead3'><b>{}</b></span>",

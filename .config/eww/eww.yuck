@@ -17,24 +17,24 @@
 
 ;; Music/Player info - using song_detail.sh script
 (defpoll music :interval "1s"
-   `bash ~/.config/scripts/song_detail.sh`)
+   `bash ~/.config/scripts/shared/song_detail.sh`)
 
 (defpoll music-status :interval "1s"
    `playerctl status 2>/dev/null || echo "Stopped"`)
 
 ;; Privacy status - monitors screen sharing, audio input/output
 (defpoll privacy :interval "1s"
-   `bash ~/.config/scripts/privacy_status.sh status`)
+   `bash ~/.config/scripts/eww/privacy_status.sh status`)
 
 (defpoll privacy-details :interval "1s"
-   `bash ~/.config/scripts/privacy_status.sh details`)
+   `bash ~/.config/scripts/eww/privacy_status.sh details`)
 
 ;; CPU usage
 (defpoll cpu-usage :interval "1s"
    `top -bn1 2>/dev/null | grep "Cpu(s)" | awk '{print int($2)}' || echo "0"`)
 
 (defpoll cpu-status :interval "1s"
-   `bash ~/.config/scripts/cpu_status.sh`)
+   `bash ~/.config/scripts/eww/cpu_status.sh`)
 
 ;; Memory usage
 (defpoll mem-usage :interval "1s"
@@ -44,7 +44,7 @@
    `free -b 2>/dev/null | awk 'NR==2 {printf "%.1f", $2/1073741824}' || echo "0"`)
 
 (defpoll memory-status :interval "1s"
-   `bash ~/.config/scripts/memory_status.sh`)
+   `bash ~/.config/scripts/eww/memory_status.sh`)
 
 ;; Audio volume
 (defpoll volume :interval "500ms"
@@ -55,19 +55,19 @@
 
 ;; Volume info - includes song details for tooltip
 (defpoll volume-info :interval "500ms"
-   `bash ~/.config/scripts/volume_info.sh`)
+   `bash ~/.config/scripts/eww/volume_info.sh`)
 
 ;; DateTime info - shows date/time and system uptime for tooltip
 (defpoll datetime-info :interval "1s"
-   `bash ~/.config/scripts/datetime_info.sh`)
+   `bash ~/.config/scripts/eww/datetime_info.sh`)
 
 ;; Network speed - shows current download/upload speeds for bar display
 (defpoll network-speed :interval "1s"
-   `bash ~/.config/scripts/network_speed.sh`)
+   `bash ~/.config/scripts/eww/network_speed.sh`)
 
 ;; Network status - shows network activity for tooltip
 (defpoll network-status :interval "1s"
-   `bash ~/.config/scripts/network_status.sh`)
+   `bash ~/.config/scripts/eww/network_status.sh`)
 
 ;; Battery
 (defpoll battery-capacity :interval "5s"
@@ -78,7 +78,7 @@
 
 ;; Battery info - detailed tooltip
 (defpoll battery-info :interval "5s"
-  `bash ~/.config/scripts/battery_info.sh`)
+  `bash ~/.config/scripts/eww/battery_info.sh`)
 
 ;; Active workspace
 (defpoll active-ws :interval "0ms"
@@ -97,7 +97,7 @@
 ;; Music widget - click to play/pause, right-click to show cover
 (defwidget music-widget []
    (eventbox :onclick "playerctl play-pause"
-             :onrightclick "bash ~/.config/scripts/show_cover.sh"
+             :onrightclick "bash ~/.config/scripts/shared/show_cover.sh"
              :class "music-box"
      (label :text music)))
 
