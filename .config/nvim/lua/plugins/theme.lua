@@ -6,8 +6,20 @@ return {
         require("catppuccin").setup({
             flavour = "macchiato",
             transparent_background = true,
+            integrations = {
+                cmp = true,
+                gitsigns = true,
+                telescope = true,
+                mason = true,
+                fzf = true,
+            },
         })
         vim.cmd.colorscheme("catppuccin")
+
+        -- Make floating windows transparent
+        vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+        vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
+        vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
     end
 }
 

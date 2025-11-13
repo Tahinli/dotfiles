@@ -62,7 +62,7 @@ if command -v playerctl &> /dev/null; then
         elif [[ -n "$title" ]]; then
             echo "$icon $title"
         else
-            echo "$icon Music"
+            echo "$icon Something's Playing"
         fi
     else
         echo ""
