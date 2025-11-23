@@ -1,15 +1,66 @@
 #!/bin/bash
-# Get current playing song from playerctl
+# Get current playing song from playerctl, prioritizing the most recently active player
+
 if command -v playerctl &> /dev/null; then
     # Check if any player is running
     if playerctl status &> /dev/null; then
-        status=$(playerctl status 2>/dev/null)
-        artist=$(playerctl metadata artist 2>/dev/null)
-        title=$(playerctl metadata title 2>/dev/null)
-        duration_us=$(playerctl metadata mpris:length 2>/dev/null)
+        # Get list of all players and find the one with most recent activity
+        player_list=$(playerctl -l 2>/dev/null)
+
+        if [[ -z "$player_list" ]]; then
+            echo ""
+            exit 0
+        fi
+
+        # Track which player has the most recent activity
+        most_recent_player=""
+        most_recent_time=0
+
+        while IFS= read -r player; do
+            player_status=$(playerctl -p "$player" status 2>/dev/null)
+
+            # Only consider players that are Playing or Paused
+            if [[ "$player_status" == "Playing" ]] || [[ "$player_status" == "Paused" ]]; then
+                # Get the last activity time for this player
+                activity_cache="/tmp/playerctl_activity_${player}"
+
+                if [[ "$player_status" == "Playing" ]]; then
+                    # Update timestamp for playing player
+                    current_time=$(date +%s)
+                    echo "$current_time" > "$activity_cache"
+                    most_recent_time=$current_time
+                    most_recent_player="$player"
+                elif [[ -f "$activity_cache" ]]; then
+                    # Check if paused player has a recent activity timestamp
+                    activity_time=$(cat "$activity_cache")
+                    if [[ $activity_time -gt $most_recent_time ]]; then
+                        most_recent_time=$activity_time
+                        most_recent_player="$player"
+                    fi
+                fi
+            fi
+        done <<< "$player_list"
+
+        # If no active player found, exit
+        if [[ -z "$most_recent_player" ]]; then
+            echo ""
+            exit 0
+        fi
+
+        status=$(playerctl -p "$most_recent_player" status 2>/dev/null)
+
+        # Exit if media is stopped
+        if [[ "$status" == "Stopped" ]]; then
+            echo ""
+            exit 0
+        fi
+
+        artist=$(playerctl -p "$most_recent_player" metadata artist 2>/dev/null)
+        title=$(playerctl -p "$most_recent_player" metadata title 2>/dev/null)
+        duration_us=$(playerctl -p "$most_recent_player" metadata mpris:length 2>/dev/null)
 
         # Define cache file for paused position
-        POSITION_CACHE="/tmp/playerctl_position_cache"
+        POSITION_CACHE="/tmp/playerctl_position_cache_${most_recent_player}"
 
         # Set icon based on playback status
         if [[ "$status" == "Playing" ]]; then
@@ -30,7 +81,7 @@ if command -v playerctl &> /dev/null; then
 
         # Get current position with caching logic
         position=""
-        position_us=$(playerctl position 2>/dev/null)
+        position_us=$(playerctl -p "$most_recent_player" position 2>/dev/null)
 
         if [[ "$status" == "Playing" ]]; then
             # When playing, get live position and cache it
