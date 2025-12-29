@@ -23,20 +23,16 @@ if command -v playerctl &> /dev/null; then
             if [[ "$player_status" == "Playing" ]] || [[ "$player_status" == "Paused" ]]; then
                 # Get the last activity time for this player
                 activity_cache="/tmp/playerctl_activity_${player}"
+                current_time=$(date +%s)
 
-                if [[ "$player_status" == "Playing" ]]; then
-                    # Update timestamp for playing player
-                    current_time=$(date +%s)
-                    echo "$current_time" > "$activity_cache"
+                # Always update timestamp for any Playing or Paused player
+                # This ensures we track when a player was last active (Playing or just paused)
+                echo "$current_time" > "$activity_cache"
+
+                # Compare timestamps to find most recent
+                if [[ $current_time -gt $most_recent_time ]]; then
                     most_recent_time=$current_time
                     most_recent_player="$player"
-                elif [[ -f "$activity_cache" ]]; then
-                    # Check if paused player has a recent activity timestamp
-                    activity_time=$(cat "$activity_cache")
-                    if [[ $activity_time -gt $most_recent_time ]]; then
-                        most_recent_time=$activity_time
-                        most_recent_player="$player"
-                    fi
                 fi
             fi
         done <<< "$player_list"
@@ -100,18 +96,22 @@ if command -v playerctl &> /dev/null; then
             fi
         fi
 
+        # Escape special characters for waybar markup compatibility
+        artist_escaped="${artist//&/&amp;}"
+        title_escaped="${title//&/&amp;}"
+
         if [[ -n "$artist" && -n "$title" && -n "$duration" && -n "$position" ]]; then
-            echo "$icon $artist - $title ($position / $duration)"
+            echo "$icon $artist_escaped - $title_escaped ($position / $duration)"
         elif [[ -n "$artist" && -n "$title" && -n "$duration" ]]; then
-            echo "$icon $artist - $title ($duration)"
+            echo "$icon $artist_escaped - $title_escaped ($duration)"
         elif [[ -n "$title" && -n "$duration" && -n "$position" ]]; then
-            echo "$icon $title ($position / $duration)"
+            echo "$icon $title_escaped ($position / $duration)"
         elif [[ -n "$title" && -n "$duration" ]]; then
-            echo "$icon $title ($duration)"
+            echo "$icon $title_escaped ($duration)"
         elif [[ -n "$artist" && -n "$title" ]]; then
-            echo "$icon $artist - $title"
+            echo "$icon $artist_escaped - $title_escaped"
         elif [[ -n "$title" ]]; then
-            echo "$icon $title"
+            echo "$icon $title_escaped"
         else
             echo "$icon Something's Playing"
         fi
