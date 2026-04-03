@@ -1,4 +1,5 @@
 configuration {
     font: "fira 18";
+    case-sensitive: false;
 }
 @theme "/usr/share/rofi/themes/gruvbox-dark-hard.rasi"

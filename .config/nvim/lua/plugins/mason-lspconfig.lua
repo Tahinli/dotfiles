@@ -11,6 +11,7 @@ return {
                 "cssls",
                 "html",
                 "ts_ls",
+                "marksman",
             },
         })
     end,

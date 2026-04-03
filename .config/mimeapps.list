@@ -56,6 +56,7 @@ text/css=com.system76.CosmicEdit.desktop
 text/x-rust=com.system76.CosmicEdit.desktop
 application/x-shellscript=com.system76.CosmicEdit.desktop
 application/x-python=com.system76.CosmicEdit.desktop
+x-scheme-handler/claude-cli=claude-code-url-handler.desktop
 
 [Added Associations]
 video/mp4=org.gnome.Showtime.desktop;

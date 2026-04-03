@@ -11,3 +11,6 @@ alias sudo="sudo-rs"
 
 starship init fish | source
 zoxide init fish | source
+
+# opencode
+fish_add_path /home/tahinli/.opencode/bin

@@ -12,11 +12,17 @@ vim.keymap.set("n", ".", require("fzf-lua").lsp_code_actions, {
     noremap = true, silent = true,
 })
 vim.keymap.set("n", ",", function() vim.diagnostic.open_float() end, {})
-vim.keymap.set("n", "\"r", function() vim.lsp.buf.rename() end, {})
+vim.keymap.set("n", "<F2>", function() vim.lsp.buf.rename() end, {})
 vim.keymap.set("n", ";", require("fzf-lua").diagnostics_workspace, {})
 
 
 vim.keymap.set({ "n", "i", "v" }, "<C-s>", format_and_save)
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+    callback = function()
+        vim.lsp.buf.format()
+    end,
+})
 vim.keymap.set({ "n", "v" }, "-", "<cmd>Oil<CR>", { noremap = true, silent = true, })
 -- terminal exit close remap
 vim.keymap.set("t", "<ESC>e", "<C-\\><C-n>", { noremap = true })

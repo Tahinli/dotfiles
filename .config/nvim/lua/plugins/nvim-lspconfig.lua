@@ -55,6 +55,10 @@ return {
             capabilities = capabilities,
         })
 
+        vim.lsp.config("marksman", {
+            capabilities = capabilities,
+        })
+
         -- Enable all configured servers
         vim.lsp.enable("lua_ls")
         vim.lsp.enable("clangd")
@@ -63,5 +67,6 @@ return {
         vim.lsp.enable("cssls")
         vim.lsp.enable("html")
         vim.lsp.enable("ts_ls")
+        vim.lsp.enable("marksman")
     end
 }
