@@ -14,3 +14,10 @@ zoxide init fish | source
 
 # opencode
 fish_add_path /home/tahinli/.opencode/bin
+
+# surrealdb
+fish_add_path /home/tahinli/.surrealdb
+
+# bun
+set --export BUN_INSTALL "$HOME/.bun"
+set --export PATH $BUN_INSTALL/bin $PATH

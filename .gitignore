@@ -1,1 +1,8 @@
 .config/nvim/lazy-lock.json
+
+# Wallust generated files
+.config/qt5ct/colors/
+.config/qt6ct/colors/
+.config/gtk-3.0/gtk.css
+.config/gtk-4.0/gtk.css
+.config/gtk-4.0/gtk-dark.css

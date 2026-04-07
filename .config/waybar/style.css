@@ -1,11 +1,11 @@
 #waybar {
     color: #ffffff;
-    background-color: alpha(#020503, 0.8);
+    background-color: alpha(#000000, 0.8);
     border-radius: 1px;
 }
 
 #idle_inhibitor.activated {
-    background-color: #B33625;
+    background-color: #e06c75;
 }
 
 * {
@@ -15,6 +15,7 @@
 
 #workspaces button {
     color: #ffffff;
+    background-color: transparent;
 }
 
 #workspaces button.active {
@@ -22,7 +23,7 @@
 }
 
 #custom-music {
-    color: #ffffff;
+    color: inherit;
     margin: 0 10px;
     background-color: transparent;
     border: none;
@@ -31,7 +32,7 @@
 }
 
 #custom-tray-toggle {
-    color: #ffffff;
+    color: inherit;
     padding: 0 6px;
 }
 

@@ -60,12 +60,12 @@ wallpaper {
 EOF
 
 pkill hyprpaper
-killall waybar 2>/dev/null
 
 # Run hyprpaper and wallust in parallel
 hyprpaper &disown
-wallust run -q "$WALLPAPER" &
+wallust run -qs "$WALLPAPER" &
 wait
 
+killall waybar 2>/dev/null
 waybar &disown
 notify-send "Wallpaper Picker" "Applied: $SELECTED"

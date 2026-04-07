@@ -80,7 +80,6 @@
   "custom/music": {
     "format": "{}",
     "exec": "bash ~/.config/scripts/shared/song_detail.sh",
-    "exec-if": "playerctl status &> /dev/null",
     "interval": 1,
     "on-click": "playerctl play-pause",
     "on-click-right": "bash ~/.config/scripts/shared/show_cover.sh",
