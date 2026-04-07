@@ -5,7 +5,7 @@
   "spacing": 16,
   "modules-left": ["hyprland/workspaces", "custom/music"],
   "modules-center": ["clock"],
-  "modules-right": ["privacy", "cpu", "memory", "wireplumber", "tray", "battery"],
+  "modules-right": ["privacy", "cpu", "memory", "wireplumber", "group/tray", "battery"],
 
   "cava": {
           "framerate": 30,
@@ -161,6 +161,23 @@
     "on-click-right": "pavucontrol",
     "format-muted": "\uf00d {volume}%"
   },
+  "group/tray": {
+    "orientation": "horizontal",
+    "drawer": {
+      "transition-duration": 300,
+      "transition-left-to-right": false
+    },
+    "modules": [
+      "custom/tray-toggle",
+      "tray"
+    ]
+  },
+
+  "custom/tray-toggle": {
+    "format": "\uf0c9",
+    "tooltip": false
+  },
+
   "tray": {
     "icon-size": 20,
     "spacing": 10

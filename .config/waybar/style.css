@@ -1,12 +1,11 @@
 #waybar {
     color: #ffffff;
-    background-color: #000000;
-    /* opacity: 1; */
+    background-color: alpha(#020503, 0.8);
     border-radius: 1px;
 }
 
 #idle_inhibitor.activated {
-    background-color: #285577;
+    background-color: #B33625;
 }
 
 * {
@@ -14,26 +13,12 @@
     font-size: 14px;
 }
 
-#pulseaudio-slider slider {
-    min-height: 0px;
-    min-width: 0px;
-    opacity: 0;
-    background-image: none;
-    border: none;
-    box-shadow: none;
+#workspaces button {
+    color: #ffffff;
 }
 
-#pulseaudio-slider trough {
-    min-height: 10px;
-    min-width: 80px;
-    border-radius: 5px;
-    background-color: black;
-}
-
-#pulseaudio-slider highlight {
-    min-width: 10px;
-    border-radius: 5px;
-    background-color: white;
+#workspaces button.active {
+    color: #ffffff;
 }
 
 #custom-music {
@@ -43,6 +28,11 @@
     border: none;
     padding: 0;
     box-shadow: none;
+}
+
+#custom-tray-toggle {
+    color: #ffffff;
+    padding: 0 6px;
 }
 
 #custom-camera {

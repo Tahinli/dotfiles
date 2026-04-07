@@ -1,10 +1,9 @@
 #!/bin/bash
-# Get current playing song from playerctl, prioritizing the most recently active player
+# Get current playing song from playerctl with sticky player preference
 
 if command -v playerctl &> /dev/null; then
     # Check if any player is running
     if playerctl status &> /dev/null; then
-        # Get list of all players and find the one with most recent activity
         player_list=$(playerctl -l 2>/dev/null)
 
         if [[ -z "$player_list" ]]; then
@@ -12,37 +11,57 @@ if command -v playerctl &> /dev/null; then
             exit 0
         fi
 
-        # Track which player has the most recent activity
-        most_recent_player=""
-        most_recent_time=0
+        PREFERRED_FILE="/tmp/playerctl_preferred_player"
 
+        # Find first Playing and first Paused player
+        best_playing=""
+        best_paused=""
         while IFS= read -r player; do
             player_status=$(playerctl -p "$player" status 2>/dev/null)
-
-            # Only consider players that are Playing or Paused
-            if [[ "$player_status" == "Playing" ]] || [[ "$player_status" == "Paused" ]]; then
-                # Get the last activity time for this player
-                activity_cache="/tmp/playerctl_activity_${player}"
-                current_time=$(date +%s)
-
-                # Always update timestamp for any Playing or Paused player
-                # This ensures we track when a player was last active (Playing or just paused)
-                echo "$current_time" > "$activity_cache"
-
-                # Compare timestamps to find most recent
-                if [[ $current_time -gt $most_recent_time ]]; then
-                    most_recent_time=$current_time
-                    most_recent_player="$player"
-                fi
+            if [[ "$player_status" == "Playing" && -z "$best_playing" ]]; then
+                best_playing="$player"
+            elif [[ "$player_status" == "Paused" && -z "$best_paused" ]]; then
+                best_paused="$player"
             fi
         done <<< "$player_list"
 
-        # If no active player found, exit
-        if [[ -z "$most_recent_player" ]]; then
+        # Sticky player logic: prefer current player to avoid flickering
+        preferred=""
+        if [[ -f "$PREFERRED_FILE" ]]; then
+            preferred=$(cat "$PREFERRED_FILE")
+            pref_status=$(playerctl -p "$preferred" status 2>/dev/null)
+            # Drop preferred if it's gone or stopped
+            if [[ "$pref_status" != "Playing" && "$pref_status" != "Paused" ]]; then
+                preferred=""
+            fi
+        fi
+
+        # Choose player:
+        # - If preferred is still Playing, keep it (prevents flickering)
+        # - If preferred is Paused but something else is Playing, switch
+        # - Otherwise fall back to best available
+        chosen=""
+        if [[ -n "$preferred" ]]; then
+            pref_status=$(playerctl -p "$preferred" status 2>/dev/null)
+            if [[ "$pref_status" == "Playing" ]]; then
+                chosen="$preferred"
+            elif [[ -n "$best_playing" ]]; then
+                chosen="$best_playing"
+            else
+                chosen="$preferred"
+            fi
+        else
+            chosen="${best_playing:-$best_paused}"
+        fi
+
+        if [[ -z "$chosen" ]]; then
             echo ""
             exit 0
         fi
 
+        echo "$chosen" > "$PREFERRED_FILE"
+
+        most_recent_player="$chosen"
         status=$(playerctl -p "$most_recent_player" status 2>/dev/null)
 
         # Exit if media is stopped
