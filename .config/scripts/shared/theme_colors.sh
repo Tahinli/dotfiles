@@ -1,5 +1,30 @@
 #!/bin/bash
-# Compute mixed surface colors for QT to match GTK mix(background, color1, ratio)
+# Post-process wallust-generated theme files:
+# - GTK 3/4: resolve mix(#hex, #hex, ratio) to pre-computed hex values
+# - QT 5/6: convert colors and compute mixed surface colors
+
+# Resolve mix() in GTK CSS files
+for css in ~/.config/gtk-4.0/gtk.css ~/.config/gtk-4.0/gtk-dark.css ~/.config/gtk-3.0/gtk.css; do
+    [ -f "$css" ] || continue
+    python3 -c "
+import re
+def mix(c1, c2, f):
+    r = int(int(c1[1:3],16)*(1-f) + int(c2[1:3],16)*f)
+    g = int(int(c1[3:5],16)*(1-f) + int(c2[3:5],16)*f)
+    b = int(int(c1[5:7],16)*(1-f) + int(c2[5:7],16)*f)
+    return f'#{r:02x}{g:02x}{b:02x}'
+
+with open('$css') as f:
+    content = f.read()
+content = re.sub(
+    r'mix\(\s*(#[0-9A-Fa-f]{6})\s*,\s*(#[0-9A-Fa-f]{6})\s*,\s*([0-9.]+)\s*\)',
+    lambda m: mix(m.group(1), m.group(2), float(m.group(3))),
+    content
+)
+with open('$css', 'w') as f:
+    f.write(content)
+"
+done
 
 for conf in ~/.config/qt5ct/colors/wallust.conf ~/.config/qt6ct/colors/wallust.conf; do
     [ -f "$conf" ] || continue

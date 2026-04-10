@@ -44,3 +44,54 @@
 
 @define-color shade_color rgba(0, 0, 0, 0.36);
 @define-color scrollbar_outline_color rgba(0, 0, 0, 0.5);
+
+window.background {
+  background-color: mix({{background}}, {{color1}}, 0.35);
+  color: {{foreground}};
+}
+
+headerbar {
+  background-color: mix({{background}}, {{color1}}, 0.4);
+  background-image: none;
+  color: {{foreground}};
+}
+
+.view, list, row, treeview {
+  background-color: mix({{background}}, {{color1}}, 0.3);
+  color: {{foreground}};
+}
+
+.card {
+  background-color: mix({{background}}, {{color1}}, 0.45);
+  color: {{foreground}};
+}
+
+.navigation-sidebar {
+  background-color: mix({{background}}, {{color1}}, 0.32);
+  color: {{foreground}};
+}
+
+popover contents {
+  background-color: mix({{background}}, {{color1}}, 0.4);
+  color: {{foreground}};
+}
+
+row:selected {
+  background-color: {{color4}};
+  color: {{color15}};
+}
+
+button.suggested-action {
+  background-color: {{color4}};
+  color: {{color15}};
+}
+
+button.destructive-action {
+  background-color: {{color1}};
+  color: {{color15}};
+}
+
+entry {
+  background-color: mix({{background}}, {{color1}}, 0.3);
+  color: {{foreground}};
+}

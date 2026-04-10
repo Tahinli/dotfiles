@@ -55,5 +55,5 @@ gtk3 = { template = 'gtk3.css', target = '~/.config/gtk-3.0/gtk.css' }
 qt5ct = { template = 'qt5ct-wallust.conf', target = '~/.config/qt5ct/colors/wallust.conf' }
 qt6ct = { template = 'qt6ct-wallust.conf', target = '~/.config/qt6ct/colors/wallust.conf' }
 [hooks]
-# Convert colors and compute mixed surface colors for QT
-qt_colors = """~/.config/scripts/shared/qt_colors.sh"""
+# Resolve mix() and compute surface colors for GTK and QT
+theme_colors = """~/.config/scripts/shared/theme_colors.sh"""
