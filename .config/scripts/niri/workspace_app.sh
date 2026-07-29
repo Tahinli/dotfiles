@@ -2,48 +2,74 @@
 # Emulates Hyprland's `workspace = N, on-created-empty: <cmd>` for niri.
 #
 # usage: workspace_app.sh <workspace-name> <command> [args...]
+#        workspace_app.sh --move <workspace-name>
 #
-# Focuses the named workspace, then launches the command only if that workspace
-# currently holds no windows. niri has no on-created-empty, and named workspaces
-# declared in the config are persistent (never "created"), so the emptiness check
-# is what makes this lazy instead of duplicating apps.
+# Behaviour:
+#   * workspace already exists (app is running) -> just focus it. It stays on the
+#     monitor it was launched on; the key moves FOCUS there rather than dragging
+#     the workspace to the monitor you happen to be on.
+#   * workspace does not exist -> take the trailing empty workspace of the
+#     focused monitor, name it, and launch the app there.
 #
-# An app's workspace sticks to the monitor it was first launched on. Pressing the
-# key again moves FOCUS there rather than pulling the workspace to the monitor
-# you happen to be on.
+# The workspaces are deliberately NOT declared in config.kdl: a declared
+# `workspace "name"` node is immortal, so eight empty workspaces would always be
+# present. Naming happens here and workspace_reaper.sh un-names an app workspace
+# once it empties, after which niri reaps it.
 set -euo pipefail
 
-ws="$1"
-shift
+. "$(dirname "$(realpath "$0")")/app_workspaces.sh"
+
+mode="focus"
+if [ "${1:-}" = "--move" ]; then
+    mode="move"
+    shift
+fi
+
+ws="${1:?usage: workspace_app.sh [--move] <workspace-name> [command...]}"
+shift || true
 
 ws_json=$(niri msg -j workspaces)
+exists=$(jq -r --arg w "$ws" '[.[] | select(.name == $w)] | length' <<<"$ws_json")
 
-id=$(jq -r --arg w "$ws" '.[] | select(.name == $w) | .id' <<<"$ws_json")
+if [ "$exists" = "0" ]; then
+    # Claim the last empty unnamed workspace on this monitor. niri always keeps
+    # one at the end of every output, so there is something to claim.
+    output=$(jq -r '.[] | select(.is_focused == true) | .output' <<<"$ws_json")
+    win_json=$(niri msg -j windows)
 
-if [ -z "$id" ]; then
-    notify-send "workspace_app" "No workspace named '$ws' — is it declared in config.kdl?"
-    exit 1
+    idx=$(jq -r --arg o "$output" --argjson w "$win_json" '
+        [ .[]
+          | select(.output == $o and .name == null)
+          | . as $ws
+          | select(([$w[] | select(.workspace_id == $ws.id)] | length) == 0)
+        ] | last | .idx // empty' <<<"$ws_json")
+
+    if [ -z "$idx" ]; then
+        notify-send "workspace_app" "No empty workspace free on $output for '$ws'"
+        exit 1
+    fi
+
+    # A freshly named workspace is still empty until the app maps its window,
+    # and workspace_reaper.sh would un-name it in that gap. The marker tells the
+    # reaper to leave this one alone for a while; see GRACE_SECONDS there.
+    mkdir -p "${XDG_RUNTIME_DIR:-/tmp}/niri-ws-grace"
+    : > "${XDG_RUNTIME_DIR:-/tmp}/niri-ws-grace/$ws"
+
+    niri msg action set-workspace-name --workspace "$idx" "$ws" >/dev/null
 fi
 
+if [ "$mode" = "move" ]; then
+    niri msg action move-column-to-workspace "$ws" >/dev/null
+    exit 0
+fi
+
+niri msg action focus-workspace "$ws" >/dev/null
+
+# Launch only when the workspace holds nothing, so a second press is "go there"
+# rather than a duplicate app.
+id=$(niri msg -j workspaces | jq -r --arg w "$ws" '.[] | select(.name == $w) | .id')
 count=$(niri msg -j windows | jq --argjson id "$id" '[.[] | select(.workspace_id == $id)] | length')
 
-here=$(jq -r '.[] | select(.is_focused == true) | .output' <<<"$ws_json")
-there=$(jq -r --arg w "$ws" '.[] | select(.name == $w) | .output' <<<"$ws_json")
-
-# The app's workspace HOME is the monitor it was first launched on, and it stays
-# there: pressing the key again just sends focus to that monitor instead of
-# dragging the workspace over. Only an empty (never-used) workspace gets moved,
-# so a first launch happens where you are.
-#
-# --reference avoids a focus change for the move: focusing it on the other
-# monitor and dragging it away afterwards leaves that monitor stranded on some
-# unrelated workspace.
-if [ "$count" -eq 0 ] && [ -n "$here" ] && [ "$here" != "$there" ]; then
-    niri msg action move-workspace-to-monitor --reference "$ws" "$here"
-fi
-
-niri msg action focus-workspace "$ws"
-
-if [ "$count" -eq 0 ]; then
+if [ "$count" -eq 0 ] && [ "$#" -gt 0 ]; then
     setsid "$@" >/dev/null 2>&1 &
 fi

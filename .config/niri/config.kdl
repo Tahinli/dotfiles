@@ -109,6 +109,7 @@ environment {
 // starts them. Hyprland ignored that target, which is why it needed exec-once.
 // The sleeps preserve Hyprland's ordering (tray applets after waybar).
 spawn-at-startup "sh" "-c" "bash ~/.config/scripts/niri/wallpaper_restore.sh"
+spawn-at-startup "sh" "-c" "bash ~/.config/scripts/niri/workspace_reaper.sh"
 spawn-at-startup "sh" "-c" "bash ~/.config/scripts/shared/song_detail_writer.sh"
 // waybar needs its own config here: the shared one uses hyprland/workspaces
 // and hyprland/window, which do nothing under niri. config-niri swaps those
@@ -149,18 +150,11 @@ window-rule {
     open-floating true
 }
 
-// App workspaces, replacing Hyprland's 100/200-206. Reachable ONLY by their
-// Alt+<letter> binds: number, direction and wheel navigation all go through
-// workspace_nav.sh, which skips named workspaces entirely. Each one homes itself
-// on the monitor of its first launch (see workspace_app.sh).
-workspace "code"
-workspace "github"
-workspace "whatsapp"
-workspace "discord"
-workspace "deezer"
-workspace "youtube"
-workspace "mail"
-workspace "signal"
+// The app workspaces (code, github, ...) are deliberately NOT declared here.
+// A declared `workspace "name"` node is immortal, which left eight empty
+// workspaces lying around. workspace_app.sh names a fresh workspace when it
+// launches the app, and workspace_reaper.sh un-names it once it empties so niri
+// reaps it. Names live in ~/.config/scripts/niri/app_workspaces.sh.
 
 binds {
     // ─── launchers (Alt trigger, Hyprland $my_trigger) ───────────────────────
@@ -194,14 +188,14 @@ binds {
     Alt+P hotkey-overlay-title="Workspace: mail" { spawn-sh "~/.config/scripts/niri/workspace_app.sh mail ~/.config/scripts/shared/webapp.sh https://mail.proton.me/ eIpzVtL8"; }
     Alt+N hotkey-overlay-title="Workspace: signal" { spawn-sh "~/.config/scripts/niri/workspace_app.sh signal flatpak run org.signal.Signal"; }
 
-    Mod+Shift+C { move-column-to-workspace "code"; }
-    Mod+Shift+G { move-column-to-workspace "github"; }
-    Mod+Shift+W { move-column-to-workspace "whatsapp"; }
-    Mod+Shift+D { move-column-to-workspace "discord"; }
-    Mod+Shift+S { move-column-to-workspace "deezer"; }
-    Mod+Shift+Y { move-column-to-workspace "youtube"; }
-    Mod+Shift+P { move-column-to-workspace "mail"; }
-    Mod+Shift+N { move-column-to-workspace "signal"; }
+    Mod+Shift+C { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move code"; }
+    Mod+Shift+G { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move github"; }
+    Mod+Shift+W { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move whatsapp"; }
+    Mod+Shift+D { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move discord"; }
+    Mod+Shift+S { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move deezer"; }
+    Mod+Shift+Y { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move youtube"; }
+    Mod+Shift+P { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move mail"; }
+    Mod+Shift+N { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move signal"; }
 
     // ─── session / system ───────────────────────────────────────────────────
     // hyprlock works here: ext-session-lock-v1, no Hyprland IPC dependency.
