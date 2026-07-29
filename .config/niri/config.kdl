@@ -232,7 +232,7 @@ layout {
         // colors cannot live in a separate generated file. Keep the marker
         // comment directly above it, and keep the whole thing on one line.
         // WALLUST-GRADIENT
-        active-gradient from="#7B6753" to="#BC7857" angle=90 in="oklch longer hue"
+        active-gradient from="#035233" to="#78818A" angle=90 in="oklch"
 
         // Hyprland col.inactive_border = rgba(595959aa)
         inactive-color "#595959aa"
@@ -363,6 +363,21 @@ animations {
 // Window rules let you adjust behavior for individual windows.
 // Find more information on the wiki:
 // https://niri-wm.github.io/niri/Configuration:-Window-Rules
+
+// Draw the border AROUND windows instead of behind them. By default niri uses
+// the border as the window background, which is invisible behind an opaque
+// window — so the Hyprland-style border simply never showed up. This is the
+// same setting that stopped the gradient bleeding through wezterm's opacity.
+window-rule {
+    draw-border-with-background false
+
+    // GTK4/libadwaita apps (nautilus, ...) round their own corners at ~12px,
+    // while niri draws the border square — the two did not line up. Telling
+    // niri the radius makes the border follow the curve, and clip-to-geometry
+    // trims the window to it so nothing pokes out past the border.
+    geometry-corner-radius 12
+    clip-to-geometry true
+}
 
 window-rule {
     // This regular expression is intentionally made as specific as possible,

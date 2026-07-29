@@ -15,19 +15,24 @@
 set -euo pipefail
 
 CONFIG="$HOME/.config/niri/config.kdl"
-SEQUENCES="$HOME/.cache/wallust/sequences"
+# Written by the 'niri' entry in wallust.toml [templates] from
+# ~/.config/wallust/templates/niri-colors.sh. Do NOT read
+# ~/.cache/wallust/sequences instead: the picker runs `wallust run -qs`, and -s
+# skips writing that file, so it silently goes stale and the border never
+# changes.
+COLORS="$HOME/.cache/wallust/niri-colors.sh"
 MARKER="// WALLUST-GRADIENT"
 
 [ -f "$CONFIG" ] || exit 0
-[ -f "$SEQUENCES" ] || exit 0
+[ -f "$COLORS" ] || exit 0
 
-# wallust writes the palette as terminal OSC sequences: ]4;<n>;#RRGGBB
-color_at() {
-    grep -oP "\]4;$1;#\K[0-9A-Fa-f]{6}" "$SEQUENCES" | head -1
-}
+# shellcheck source=/dev/null
+. "$COLORS"
 
-FROM=$(color_at 4)
-TO=$(color_at 6)
+# wallust's {{colorN}} placeholders already carry the leading '#'; strip it so
+# exactly one is added back below regardless of format.
+FROM="${NIRI_BORDER_FROM#\#}"
+TO="${NIRI_BORDER_TO#\#}"
 
 if [ -z "$FROM" ] || [ -z "$TO" ]; then
     exit 0
@@ -40,7 +45,7 @@ awk -v marker="$MARKER" -v from="#$FROM" -v to="#$TO" '
     hit {
         match($0, /^[ \t]*/)
         indent = substr($0, 1, RLENGTH)
-        printf "%sactive-gradient from=\"%s\" to=\"%s\" angle=90 in=\"oklch longer hue\"\n", indent, from, to
+        printf "%sactive-gradient from=\"%s\" to=\"%s\" angle=90 in=\"oklch\"\n", indent, from, to
         hit = 0
         next
     }

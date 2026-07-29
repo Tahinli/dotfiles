@@ -56,6 +56,7 @@ gtk2 = { template = 'gtk2.gtkrc', target = '~/.gtkrc-2.0.mine' }
 kdeglobals = { template = 'kdeglobals', target = '~/.config/kdeglobals' }
 qt5ct = { template = 'qt5ct-wallust.conf', target = '~/.config/qt5ct/colors/wallust.conf' }
 qt6ct = { template = 'qt6ct-wallust.conf', target = '~/.config/qt6ct/colors/wallust.conf' }
+niri = { template = 'niri-colors.sh', target = '~/.cache/wallust/niri-colors.sh' }
 [hooks]
 # Resolve mix() and compute surface colors for GTK and QT
 theme_colors = """~/.config/scripts/shared/theme_colors.sh"""
