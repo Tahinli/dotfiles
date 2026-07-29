@@ -52,8 +52,13 @@ palette = "saliencedarkbalanced"
 gtk4 = { template = 'gtk4.css', target = '~/.config/gtk-4.0/gtk.css' }
 gtk4dark = { template = 'gtk4.css', target = '~/.config/gtk-4.0/gtk-dark.css' }
 gtk3 = { template = 'gtk3.css', target = '~/.config/gtk-3.0/gtk.css' }
+gtk2 = { template = 'gtk2.gtkrc', target = '~/.gtkrc-2.0.mine' }
+kdeglobals = { template = 'kdeglobals', target = '~/.config/kdeglobals' }
 qt5ct = { template = 'qt5ct-wallust.conf', target = '~/.config/qt5ct/colors/wallust.conf' }
 qt6ct = { template = 'qt6ct-wallust.conf', target = '~/.config/qt6ct/colors/wallust.conf' }
 [hooks]
 # Resolve mix() and compute surface colors for GTK and QT
 theme_colors = """~/.config/scripts/shared/theme_colors.sh"""
+# niri has no `include`, so its border gradient is rewritten inside config.kdl.
+# No-op when the niri config is absent; harmless while running Hyprland.
+niri_colors = """~/.config/scripts/niri/wallust_niri_colors.sh"""
