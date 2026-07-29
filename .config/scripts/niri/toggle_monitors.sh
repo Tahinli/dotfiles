@@ -10,33 +10,32 @@
 # entries below disable rather than blank.
 set -euo pipefail
 
-DP1="DP-1"
-HDMI="HDMI-A-1"
+. "$(dirname "$(realpath "$0")")/monitors.sh"
 
 all_on() {
     niri msg action power-on-monitors
-    niri msg output "$DP1" on
-    niri msg output "$HDMI" on
+    niri msg output "$LEFT_MONITOR" on
+    niri msg output "$RIGHT_MONITOR" on
 }
 
 case "${1:-menu}" in
 menu)
     choice=$(printf '%s\n' \
         "🖥️ All Monitors Off (blank, any key wakes)" \
-        "🖥️ DP-1 Off (disable)" \
-        "🖥️ HDMI-A-1 Off (disable)" \
+        "🖥️ $LEFT_MONITOR Off (disable)" \
+        "🖥️ $RIGHT_MONITOR Off (disable)" \
         "💡 All Monitors On" \
-        "💡 DP-1 On" \
-        "💡 HDMI-A-1 On" \
+        "💡 $LEFT_MONITOR On" \
+        "💡 $RIGHT_MONITOR On" \
         "❌ Cancel" | rofi -dmenu -p "Monitors" -i)
 
     case "$choice" in
     "🖥️ All Monitors Off"*) niri msg action power-off-monitors ;;
-    "🖥️ DP-1 Off"*) niri msg output "$DP1" off ;;
-    "🖥️ HDMI-A-1 Off"*) niri msg output "$HDMI" off ;;
+    "🖥️ $LEFT_MONITOR Off"*) niri msg output "$LEFT_MONITOR" off ;;
+    "🖥️ $RIGHT_MONITOR Off"*) niri msg output "$RIGHT_MONITOR" off ;;
     "💡 All Monitors On"*) all_on ;;
-    "💡 DP-1 On"*) niri msg output "$DP1" on ;;
-    "💡 HDMI-A-1 On"*) niri msg output "$HDMI" on ;;
+    "💡 $LEFT_MONITOR On"*) niri msg output "$LEFT_MONITOR" on ;;
+    "💡 $RIGHT_MONITOR On"*) niri msg output "$RIGHT_MONITOR" on ;;
     *) ;;
     esac
     ;;
