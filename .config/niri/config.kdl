@@ -146,8 +146,10 @@ window-rule {
     open-floating true
 }
 
-// App workspaces, replacing Hyprland's 100/200-206. Not pinned to an output
-// (no open-on-output), so they follow the monitor you are on.
+// App workspaces, replacing Hyprland's 100/200-206. Reachable ONLY by their
+// Alt+<letter> binds: number, direction and wheel navigation all go through
+// workspace_nav.sh, which skips named workspaces entirely. Each one homes itself
+// on the monitor of its first launch (see workspace_app.sh).
 workspace "code"
 workspace "github"
 workspace "whatsapp"
@@ -176,10 +178,10 @@ binds {
     Shift+Alt+F hotkey-overlay-title="Browser (incognito, outside VPN)" { spawn-sh "mullvad-exclude flatpak run org.chromium.Chromium --incognito --enable-features=MiddleClickAutoscroll,AllowLegacyMV2Extensions --disable-features=ExtensionManifestV2Unsupported,ExtensionManifestV2Disabled,ExtensionsManifestV3Only"; }
 
     // ─── app workspaces ─────────────────────────────────────────────────────
-    // workspace_app.sh emulates Hyprland's on-created-empty, which niri lacks:
-    // it pulls the workspace to the focused monitor, then launches the app only
-    // if that workspace is empty. webapp.sh builds the Chromium web-app command
-    // from a URL + profile id.
+    // workspace_app.sh emulates Hyprland's on-created-empty, which niri lacks.
+    // An empty workspace moves to the monitor you are on and the app launches
+    // there; once it holds windows the key only moves focus to it. webapp.sh
+    // builds the Chromium web-app command from a URL + profile id.
     Alt+C hotkey-overlay-title="Workspace: code" { spawn-sh "~/.config/scripts/niri/workspace_app.sh code zed"; }
     Alt+G hotkey-overlay-title="Workspace: github" { spawn-sh "~/.config/scripts/niri/workspace_app.sh github ~/.config/scripts/shared/webapp.sh https://github.com/ FCF18Wmt"; }
     Alt+W hotkey-overlay-title="Workspace: whatsapp" { spawn-sh "~/.config/scripts/niri/workspace_app.sh whatsapp ~/.config/scripts/shared/webapp.sh --mullvad https://web.whatsapp.com/ aW2IMaZ8"; }
@@ -282,56 +284,62 @@ binds {
     // niri workspaces are per-monitor already, which is what hyprsplit gave
     // Hyprland. Mod+Shift+N is Hyprland's send-to-workspace; the stock
     // Mod+Ctrl+N binds do the same and are kept as well.
-    Mod+1 { focus-workspace 1; }
-    Mod+2 { focus-workspace 2; }
-    Mod+3 { focus-workspace 3; }
-    Mod+4 { focus-workspace 4; }
-    Mod+5 { focus-workspace 5; }
-    Mod+6 { focus-workspace 6; }
-    Mod+7 { focus-workspace 7; }
-    Mod+8 { focus-workspace 8; }
-    Mod+9 { focus-workspace 9; }
-    Mod+0 { focus-workspace 10; }
+    //
+    // All of these go through workspace_nav.sh rather than niri's own
+    // focus-workspace: niri numbers are indices into each output's live
+    // workspace list, and the named app workspaces live in that same list, so
+    // Mod+3 could land on "discord". The script indexes the PLAIN workspaces
+    // only. N past the end clamps to the last one.
+    Mod+1 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh focus 1"; }
+    Mod+2 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh focus 2"; }
+    Mod+3 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh focus 3"; }
+    Mod+4 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh focus 4"; }
+    Mod+5 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh focus 5"; }
+    Mod+6 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh focus 6"; }
+    Mod+7 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh focus 7"; }
+    Mod+8 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh focus 8"; }
+    Mod+9 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh focus 9"; }
+    Mod+0 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh focus 10"; }
 
-    Mod+Shift+1 { move-column-to-workspace 1; }
-    Mod+Shift+2 { move-column-to-workspace 2; }
-    Mod+Shift+3 { move-column-to-workspace 3; }
-    Mod+Shift+4 { move-column-to-workspace 4; }
-    Mod+Shift+5 { move-column-to-workspace 5; }
-    Mod+Shift+6 { move-column-to-workspace 6; }
-    Mod+Shift+7 { move-column-to-workspace 7; }
-    Mod+Shift+8 { move-column-to-workspace 8; }
-    Mod+Shift+9 { move-column-to-workspace 9; }
-    Mod+Shift+0 { move-column-to-workspace 10; }
+    Mod+Shift+1 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move 1"; }
+    Mod+Shift+2 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move 2"; }
+    Mod+Shift+3 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move 3"; }
+    Mod+Shift+4 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move 4"; }
+    Mod+Shift+5 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move 5"; }
+    Mod+Shift+6 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move 6"; }
+    Mod+Shift+7 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move 7"; }
+    Mod+Shift+8 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move 8"; }
+    Mod+Shift+9 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move 9"; }
+    Mod+Shift+0 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move 10"; }
 
-    Mod+Ctrl+1 { move-column-to-workspace 1; }
-    Mod+Ctrl+2 { move-column-to-workspace 2; }
-    Mod+Ctrl+3 { move-column-to-workspace 3; }
-    Mod+Ctrl+4 { move-column-to-workspace 4; }
-    Mod+Ctrl+5 { move-column-to-workspace 5; }
-    Mod+Ctrl+6 { move-column-to-workspace 6; }
-    Mod+Ctrl+7 { move-column-to-workspace 7; }
-    Mod+Ctrl+8 { move-column-to-workspace 8; }
-    Mod+Ctrl+9 { move-column-to-workspace 9; }
+    Mod+Ctrl+1 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move 1"; }
+    Mod+Ctrl+2 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move 2"; }
+    Mod+Ctrl+3 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move 3"; }
+    Mod+Ctrl+4 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move 4"; }
+    Mod+Ctrl+5 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move 5"; }
+    Mod+Ctrl+6 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move 6"; }
+    Mod+Ctrl+7 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move 7"; }
+    Mod+Ctrl+8 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move 8"; }
+    Mod+Ctrl+9 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move 9"; }
 
-    Mod+Page_Down { focus-workspace-down; }
-    Mod+Page_Up   { focus-workspace-up; }
-    Mod+U         { focus-workspace-down; }
-    Mod+I         { focus-workspace-up; }
-    Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
-    Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
-    Mod+Ctrl+U         { move-column-to-workspace-down; }
-    Mod+Ctrl+I         { move-column-to-workspace-up; }
+    Mod+Page_Down { spawn-sh "~/.config/scripts/niri/workspace_nav.sh next"; }
+    Mod+Page_Up   { spawn-sh "~/.config/scripts/niri/workspace_nav.sh prev"; }
+    Mod+U         { spawn-sh "~/.config/scripts/niri/workspace_nav.sh next"; }
+    Mod+I         { spawn-sh "~/.config/scripts/niri/workspace_nav.sh prev"; }
+    Mod+Ctrl+Page_Down { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move-next"; }
+    Mod+Ctrl+Page_Up   { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move-prev"; }
+    Mod+Ctrl+U         { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move-next"; }
+    Mod+Ctrl+I         { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move-prev"; }
     Mod+Shift+Page_Down { move-workspace-down; }
     Mod+Shift+Page_Up   { move-workspace-up; }
     Mod+Shift+U         { move-workspace-down; }
     Mod+Shift+I         { move-workspace-up; }
 
     // ─── scroll wheel ───────────────────────────────────────────────────────
-    Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
-    Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
-    Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
-    Mod+Ctrl+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
+    Mod+WheelScrollDown      cooldown-ms=150 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh next"; }
+    Mod+WheelScrollUp        cooldown-ms=150 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh prev"; }
+    Mod+Ctrl+WheelScrollDown cooldown-ms=150 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move-next"; }
+    Mod+Ctrl+WheelScrollUp   cooldown-ms=150 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move-prev"; }
     Mod+WheelScrollRight      { focus-column-right; }
     Mod+WheelScrollLeft       { focus-column-left; }
     Mod+Ctrl+WheelScrollRight { move-column-right; }
