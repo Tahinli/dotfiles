@@ -110,7 +110,10 @@ environment {
 // The sleeps preserve Hyprland's ordering (tray applets after waybar).
 spawn-at-startup "sh" "-c" "bash ~/.config/scripts/niri/wallpaper_restore.sh"
 spawn-at-startup "sh" "-c" "bash ~/.config/scripts/shared/song_detail_writer.sh"
-spawn-at-startup "sh" "-c" "sleep 1 && waybar"
+// waybar needs its own config here: the shared one uses hyprland/workspaces
+// and hyprland/window, which do nothing under niri. config-niri swaps those
+// for niri/workspaces and niri/window.
+spawn-at-startup "sh" "-c" "sleep 1 && waybar -c ~/.config/waybar/config-niri"
 spawn-at-startup "sh" "-c" "sleep 2 && kdeconnect-indicator"
 spawn-at-startup "sh" "-c" "sleep 3 && /opt/Mullvad\\ VPN/mullvad-vpn"
 spawn-at-startup "sh" "-c" "sleep 3 && swaync-client -dn"

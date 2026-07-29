@@ -74,6 +74,8 @@ wait
 # Remember the choice so the daemon can be restored on the next login.
 echo "$WALLPAPER" > "$STATE_FILE"
 
+# -c: the shared waybar config uses the hyprland/* modules, which are inert
+# under niri. Must match the config niri starts waybar with.
 killall waybar 2>/dev/null
-waybar &disown
+waybar -c "$HOME/.config/waybar/config-niri" &disown
 notify-send "Wallpaper Picker" "Applied: $SELECTED"
