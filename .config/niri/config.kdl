@@ -254,10 +254,15 @@ binds {
     // ─── focus ──────────────────────────────────────────────────────────────
     // Mod+H is the waybar toggle and Mod+L is the locker, so the stock vim-nav
     // binds for those two are gone; arrows still navigate.
+    //
+    // Left/Right move between columns. Up/Down are vertical in niri's sense:
+    // the next window in the column when the column has one, otherwise the
+    // workspace above/below (workspaces stack vertically). Mod+J/K stay
+    // strictly in-column.
     Mod+Left  { focus-column-left; }
     Mod+Right { focus-column-right; }
-    Mod+Up    { focus-window-up; }
-    Mod+Down  { focus-window-down; }
+    Mod+Up    { spawn-sh "~/.config/scripts/niri/workspace_nav.sh up"; }
+    Mod+Down  { spawn-sh "~/.config/scripts/niri/workspace_nav.sh down"; }
     Mod+J     { focus-window-down; }
     Mod+K     { focus-window-up; }
     Mod+Home  { focus-column-first; }
@@ -268,8 +273,8 @@ binds {
     // ─── move windows ───────────────────────────────────────────────────────
     Mod+Ctrl+Left  { move-column-left; }
     Mod+Ctrl+Right { move-column-right; }
-    Mod+Ctrl+Up    { move-window-up; }
-    Mod+Ctrl+Down  { move-window-down; }
+    Mod+Ctrl+Up    { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move-up"; }
+    Mod+Ctrl+Down  { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move-down"; }
     Mod+Ctrl+H     { move-column-left; }
     Mod+Ctrl+L     { move-column-right; }
     Mod+Ctrl+J     { move-window-down; }

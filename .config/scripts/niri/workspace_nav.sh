@@ -5,6 +5,9 @@
 #        workspace_nav.sh move  <N>       move focused column to it
 #        workspace_nav.sh next|prev       focus the next/previous plain one
 #        workspace_nav.sh move-next|move-prev
+#        workspace_nav.sh up|down         focus within the column, else the
+#                                         workspace above/below
+#        workspace_nav.sh move-up|move-down  same, moving the window
 #
 # Why this exists: niri workspace numbers are indices into each output's live
 # workspace list, and the named app workspaces (code, github, ...) live in that
@@ -18,7 +21,42 @@
 # is always at least one target.
 set -euo pipefail
 
-action="${1:?usage: workspace_nav.sh focus|move|next|prev|move-next|move-prev [N]}"
+action="${1:?usage: workspace_nav.sh focus|move|next|prev|move-next|move-prev|up|down|move-up|move-down [N]}"
+
+# Vertical motion: niri stacks workspaces vertically, so "down" means the next
+# window in the column when there is one, and otherwise the workspace below.
+# Whether the in-column action did anything is decided by comparing the focused
+# window's row before and after — cheaper and more robust than reimplementing
+# niri's column arithmetic.
+if [ "$action" = "up" ] || [ "$action" = "down" ] || [ "$action" = "move-up" ] || [ "$action" = "move-down" ]; then
+    row_of_focused() {
+        niri msg -j windows | jq -r '.[] | select(.is_focused == true) | .layout.pos_in_scrolling_layout | "\(.[0]),\(.[1])"'
+    }
+
+    before=$(row_of_focused)
+
+    case "$action" in
+    up)        niri msg action focus-window-up >/dev/null 2>&1 || true ;;
+    down)      niri msg action focus-window-down >/dev/null 2>&1 || true ;;
+    move-up)   niri msg action move-window-up >/dev/null 2>&1 || true ;;
+    move-down) niri msg action move-window-down >/dev/null 2>&1 || true ;;
+    esac
+
+    after=$(row_of_focused)
+
+    if [ -n "$before" ] && [ "$before" != "$after" ]; then
+        exit 0 # the in-column move worked
+    fi
+
+    # Nowhere to go inside the column: fall through to the workspace above/below,
+    # which is the plain-workspace navigation below.
+    case "$action" in
+    up)        action="prev" ;;
+    down)      action="next" ;;
+    move-up)   action="move-prev" ;;
+    move-down) action="move-next" ;;
+    esac
+fi
 
 ws_json=$(niri msg -j workspaces)
 output=$(jq -r '.[] | select(.is_focused == true) | .output' <<<"$ws_json")
