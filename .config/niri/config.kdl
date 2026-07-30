@@ -80,6 +80,18 @@ layout {
 
     center-focused-column "never"
 
+    // Puts a plain workspace at index 1 on every output, above the declared
+    // named block — so the workspace waybar labels on HDMI-A-1 is 1, not 9.
+    //
+    // This is NOT a replacement for workspace_startup.sh, which was tested:
+    // alone it still logs in with the first NAMED workspace active, because it
+    // only creates the workspace, it never focuses it. The two go together —
+    // this one supplies index 1, the script focuses it.
+    //
+    // Cost, accepted knowingly: every Mod+<N> shifts by one, since
+    // workspace_nav.sh indexes plain workspaces and this adds one at the top.
+    empty-workspace-above-first
+
     // New windows take the whole working area — the closest thing to dwindle
     // handing a new window all the free space. 1.0 is in the preset cycle too,
     // otherwise one Mod+R drops a window to 1/3 with no way back to full.
@@ -137,6 +149,12 @@ spawn-at-startup "sh" "-c" "sleep 3 && swaync-client -dn"
 spawn-at-startup "sh" "-c" "sleep 3 && wl-paste --type text --watch cliphist store"
 spawn-at-startup "sh" "-c" "sleep 3 && wl-paste --type image --watch cliphist store"
 spawn-at-startup "sh" "-c" "sleep 4 && rfkill unblock bluetooth && bluetoothctl power on"
+
+// The declared app workspaces below all get created on the first output niri
+// connects (HDMI-A-1), so that monitor logs in showing "code". This puts every
+// output back on a plain workspace. Early on purpose: it must finish before the
+// sleep-3/sleep-4 apps map their windows, or one lands on the wrong monitor.
+spawn-at-startup "sh" "-c" "sleep 1 && bash ~/.config/scripts/niri/workspace_startup.sh"
 
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
