@@ -8,6 +8,11 @@
 //
 // Mod = Super. Alt is the app-launcher trigger, matching Hyprland's $my_trigger.
 
+hotkey-overlay {
+    // Do not pop the keybind cheat sheet on login. Mod+Shift+Slash still shows it.
+    skip-at-startup
+}
+
 input {
     keyboard {
         xkb {
@@ -32,6 +37,18 @@ input {
     // focus-follows-mouse stays off, matching Hyprland's follow_mouse = 0.
     // No niri equivalent for mouse_move_focuses_monitor = false: moving the
     // cursor to the other output does make it the focused one.
+}
+
+// Ask every client to skip its own decorations, so niri's border is the only
+// frame. Kills the CSD titlebar that showed the page/document title (Hyprland
+// never had one because it sends server-side decorations by default).
+prefer-no-csd
+
+gestures {
+    // No overview/workspace switch when the pointer hits a screen corner.
+    hot-corners {
+        off
+    }
 }
 
 // Hyprland had `bitdepth 10`; niri 26.04 has no bit-depth or hdr output key.
@@ -88,7 +105,7 @@ layout {
         // change. niri has no `include`, so generated colors cannot live in a
         // separate file. Keep the marker directly above it, all on one line.
         // WALLUST-GRADIENT
-        active-gradient from="#7B6753" to="#BC7857" angle=90 in="oklch"
+        active-gradient from="#4D0830" to="#7E420A" angle=90 in="oklch"
 
         inactive-color "#595959aa"
         urgent-color "#9b0000"
