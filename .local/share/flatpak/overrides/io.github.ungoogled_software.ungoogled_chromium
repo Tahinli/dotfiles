@@ -1,0 +1,5 @@
+[Context]
+sockets=!x11;
+
+[Environment]
+GTK_DECORATION_LAYOUT=:
