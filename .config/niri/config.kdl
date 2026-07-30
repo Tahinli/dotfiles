@@ -126,7 +126,6 @@ environment {
 // starts them. Hyprland ignored that target, which is why it needed exec-once.
 // The sleeps preserve Hyprland's ordering (tray applets after waybar).
 spawn-at-startup "sh" "-c" "bash ~/.config/scripts/niri/wallpaper_restore.sh"
-spawn-at-startup "sh" "-c" "bash ~/.config/scripts/niri/workspace_reaper.sh"
 spawn-at-startup "sh" "-c" "bash ~/.config/scripts/shared/song_detail_writer.sh"
 // waybar needs its own config here: the shared one uses hyprland/workspaces
 // and hyprland/window, which do nothing under niri. config-niri swaps those
@@ -167,11 +166,28 @@ window-rule {
     open-floating true
 }
 
-// The app workspaces (code, github, ...) are deliberately NOT declared here.
-// A declared `workspace "name"` node is immortal, which left eight empty
-// workspaces lying around. workspace_app.sh names a fresh workspace when it
-// launches the app, and workspace_reaper.sh un-names it once it empties so niri
-// reaps it. Names live in ~/.config/scripts/niri/app_workspaces.sh.
+// The app workspaces. A declared `workspace "name"` node is immortal — which is
+// exactly the point: nothing has to create, name or clean them up, so there is
+// no reaper daemon and no marker files. They were briefly named at runtime
+// instead, and the reaper that un-named them died mid-session (niri dropped its
+// IPC event stream for "reading events too slowly") leaving empty named
+// workspaces behind — the failure this replaces.
+//
+// The empties are only visible in the overview: workspace_nav.sh filters on
+// `.name == null`, so number and directional navigation skip them, and waybar
+// runs niri/workspaces with current-only.
+//
+// No open-on-output on purpose — KDL has no variables and monitor names are kept
+// to the `output` blocks and the monitor binds. They start on the first output
+// and workspace_app.sh pulls an empty one to the monitor in use on launch.
+workspace "code"
+workspace "github"
+workspace "whatsapp"
+workspace "discord"
+workspace "deezer"
+workspace "youtube"
+workspace "mail"
+workspace "signal"
 
 binds {
     // ─── launchers (Alt trigger, Hyprland $my_trigger) ───────────────────────
@@ -193,13 +209,15 @@ binds {
 
     // ─── app workspaces ─────────────────────────────────────────────────────
     // workspace_app.sh emulates Hyprland's on-created-empty, which niri lacks.
-    // An empty workspace moves to the monitor you are on and the app launches
-    // there; once it holds windows the key only moves focus to it. webapp.sh
-    // builds the Chromium web-app command from a URL + profile id.
+    // The workspaces are declared above, so "is the app running" is just "does
+    // its workspace hold a window". Empty -> the workspace moves to the monitor
+    // you are on and the app launches there; holding windows -> the key only
+    // moves focus to it, leaving it on its own monitor. webapp.sh builds the
+    // Chromium web-app command from a URL + profile id.
     Alt+C hotkey-overlay-title="Workspace: code" { spawn-sh "~/.config/scripts/niri/workspace_app.sh code zed"; }
     Alt+G hotkey-overlay-title="Workspace: github" { spawn-sh "~/.config/scripts/niri/workspace_app.sh github ~/.config/scripts/shared/webapp.sh https://github.com/ FCF18Wmt"; }
     Alt+W hotkey-overlay-title="Workspace: whatsapp" { spawn-sh "~/.config/scripts/niri/workspace_app.sh whatsapp ~/.config/scripts/shared/webapp.sh --mullvad https://web.whatsapp.com/ aW2IMaZ8"; }
-    Alt+D hotkey-overlay-title="Workspace: discord" { spawn-sh "~/.config/scripts/niri/workspace_app.sh discord flatpak run dev.vencord.Vesktop"; }
+    Alt+D hotkey-overlay-title="Workspace: discord" { spawn-sh "~/.config/scripts/niri/workspace_app.sh discord flatpak run org.equicord.equibop"; }
     Alt+S hotkey-overlay-title="Workspace: deezer" { spawn-sh "~/.config/scripts/niri/workspace_app.sh deezer ~/.config/scripts/shared/webapp.sh --mullvad https://deezer.com/ VjW8vTQ3"; }
     Alt+Y hotkey-overlay-title="Workspace: youtube" { spawn-sh "~/.config/scripts/niri/workspace_app.sh youtube mullvad-exclude flatpak run io.freetubeapp.FreeTube"; }
     Alt+P hotkey-overlay-title="Workspace: mail" { spawn-sh "~/.config/scripts/niri/workspace_app.sh mail ~/.config/scripts/shared/webapp.sh https://mail.proton.me/ eIpzVtL8"; }
