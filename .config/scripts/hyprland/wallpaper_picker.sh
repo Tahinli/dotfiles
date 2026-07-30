@@ -1,14 +1,11 @@
 #!/bin/bash
-# Rofi wallpaper picker — updates hyprpaper, wallust, and waybar
 
 WALLPAPER_DIR="$HOME/Pictures/Wallpapers"
 HYPRPAPER_CONF="$HOME/.config/hypr/hyprpaper.conf"
 THUMB_DIR="$HOME/.cache/wallpaper_thumbs"
 
-# Generate thumbnail cache (only for new/changed images)
 mkdir -p "$THUMB_DIR"
 
-# Remove orphan thumbnails for deleted wallpapers
 for thumb in "$THUMB_DIR"/*.png; do
     [ -f "$thumb" ] || continue
     name=$(basename "$thumb" .png)
@@ -17,7 +14,6 @@ for thumb in "$THUMB_DIR"/*.png; do
     fi
 done
 
-# Generate thumbnails for new/changed wallpapers
 find "$WALLPAPER_DIR" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) | while read -r img; do
     name=$(basename "$img")
     thumb="$THUMB_DIR/$name.png"
@@ -27,7 +23,6 @@ find "$WALLPAPER_DIR" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -
 done
 wait
 
-# List image files with cached thumbnails in a grid rofi
 SELECTED=$(find "$WALLPAPER_DIR" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) | sort | while read -r img; do
     name=$(basename "$img")
     echo -en "${name}\0icon\x1f${THUMB_DIR}/${name}.png\n"
@@ -48,7 +43,6 @@ if [ ! -f "$WALLPAPER" ]; then
     exit 1
 fi
 
-# Update hyprpaper config and kill both processes
 cat > "$HYPRPAPER_CONF" << EOF
 splash = false
 
@@ -61,7 +55,6 @@ EOF
 
 pkill hyprpaper
 
-# Run hyprpaper and wallust in parallel
 hyprpaper &disown
 wallust run -qs "$WALLPAPER" &
 wait

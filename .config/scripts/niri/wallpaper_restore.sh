@@ -1,7 +1,4 @@
 #!/bin/bash
-# Start awww-daemon and restore the last wallpaper picked by wallpaper_picker.sh.
-# Run once at niri startup. hyprpaper read its wallpaper from hyprpaper.conf;
-# awww keeps no config file, so the choice is remembered in a state file.
 
 STATE_FILE="$HOME/.cache/current_wallpaper"
 FALLBACK_DIR="$HOME/Pictures/Wallpapers"
@@ -21,8 +18,6 @@ if [ -s "$STATE_FILE" ]; then
     WALLPAPER=$(cat "$STATE_FILE")
 fi
 
-# First run on niri: fall back to whatever hyprpaper was last set to, so the
-# desktop does not come up blank before the first pick.
 if [ ! -f "$WALLPAPER" ]; then
     WALLPAPER=$(grep -oP '^\s*path\s*=\s*\K.*' "$HOME/.config/hypr/hyprpaper.conf" 2>/dev/null | head -1)
 fi

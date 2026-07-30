@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Toggle monitors off via rofi, re-enable with keybinding
-
 DP1_CONFIG="DP-1, 2560x1440@180, 0x0, 1, bitdepth, 10"
 HDMI_CONFIG="HDMI-A-1, 1920x1080@75, 2560x0, 1, bitdepth, 10"
 

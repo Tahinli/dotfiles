@@ -24,8 +24,6 @@ WS_FOCUSED=$WS_FOCUSED
 WS_OTHER=$WS_OTHER
 EOF
 
-    # one empty dummy workspace per monitor; no swapactiveworkspaces —
-    # swaps rebind workspaces to the wrong monitor and confuse waybar
     if [ -n "$MON2" ]; then
         hyprctl --batch "dispatch focusmonitor $MON2; dispatch workspace 998; dispatch focusmonitor $MON1; dispatch workspace 999"
     else

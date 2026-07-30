@@ -1,15 +1,5 @@
-// niri config — ported from ~/.config/hypr/hyprland.conf, both kept working.
-// Docs: https://niri-wm.github.io/niri/  •  check edits with `niri validate`
-//
-// MONITORS: DP-1 = left/primary (2560x1440@180), HDMI-A-1 = right (1920x1080@75).
-// KDL has no variables, so those names are literal. They appear ONLY in the
-// `output` blocks and the four monitor binds below. Scripts read them from
-// ~/.config/scripts/niri/monitors.sh instead.
-//
-// Mod = Super. Alt is the app-launcher trigger, matching Hyprland's $my_trigger.
 
 hotkey-overlay {
-    // Do not pop the keybind cheat sheet on login. Mod+Shift+Slash still shows it.
     skip-at-startup
 }
 
@@ -26,7 +16,6 @@ input {
         natural-scroll
     }
 
-    // Hyprland: accel_profile = flat (raw input, no acceleration curve).
     mouse {
         accel-profile "flat"
     }
@@ -34,24 +23,16 @@ input {
     trackpoint {
     }
 
-    // focus-follows-mouse stays off, matching Hyprland's follow_mouse = 0.
-    // No niri equivalent for mouse_move_focuses_monitor = false: moving the
-    // cursor to the other output does make it the focused one.
 }
 
-// Ask every client to skip its own decorations, so niri's border is the only
-// frame. Kills the CSD titlebar that showed the page/document title (Hyprland
-// never had one because it sends server-side decorations by default).
 prefer-no-csd
 
 gestures {
-    // No overview/workspace switch when the pointer hits a screen corner.
     hot-corners {
         off
     }
 }
 
-// Hyprland had `bitdepth 10`; niri 26.04 has no bit-depth or hdr output key.
 output "DP-1" {
     mode "2560x1440@180"
     scale 1
@@ -60,7 +41,6 @@ output "DP-1" {
     focus-at-startup
 }
 
-// Mode string must be exact: 75.003, not 75.
 output "HDMI-A-1" {
     mode "1920x1080@75.003"
     scale 1
@@ -69,7 +49,6 @@ output "HDMI-A-1" {
 }
 
 layout {
-    // Hyprland gaps_in = 3; the remaining 7 to reach gaps_out = 10 is in struts.
     gaps 3
     struts {
         left 7
@@ -80,21 +59,8 @@ layout {
 
     center-focused-column "never"
 
-    // Puts a plain workspace at index 1 on every output, above the declared
-    // named block — so the workspace waybar labels on HDMI-A-1 is 1, not 9.
-    //
-    // This is NOT a replacement for workspace_startup.sh, which was tested:
-    // alone it still logs in with the first NAMED workspace active, because it
-    // only creates the workspace, it never focuses it. The two go together —
-    // this one supplies index 1, the script focuses it.
-    //
-    // Cost, accepted knowingly: every Mod+<N> shifts by one, since
-    // workspace_nav.sh indexes plain workspaces and this adds one at the top.
     empty-workspace-above-first
 
-    // New windows take the whole working area — the closest thing to dwindle
-    // handing a new window all the free space. 1.0 is in the preset cycle too,
-    // otherwise one Mod+R drops a window to 1/3 with no way back to full.
     default-column-width { proportion 1.0; }
     preset-column-widths {
         proportion 0.33333
@@ -103,19 +69,13 @@ layout {
         proportion 1.0
     }
 
-    // Hyprland had one border concept, mapped to `border` below.
     focus-ring {
         off
     }
 
     border {
-        // Hyprland general:border_size = 2
         width 2
 
-        // The line after the marker is REWRITTEN IN PLACE by
-        // ~/.config/scripts/niri/wallust_niri_colors.sh on every wallpaper
-        // change. niri has no `include`, so generated colors cannot live in a
-        // separate file. Keep the marker directly above it, all on one line.
         // WALLUST-GRADIENT
         active-gradient from="#4D0830" to="#7E420A" angle=90 in="oklch"
 
@@ -123,9 +83,6 @@ layout {
         urgent-color "#9b0000"
     }
 
-    // Shadows and rounding are left off (Hyprland had rounding = 0, blur off).
-    // Rounded corners come from the window rule below instead, only so the
-    // border traces the curve GTK4 apps draw themselves.
 }
 
 environment {
@@ -133,15 +90,8 @@ environment {
     XCURSOR_SIZE "24"
 }
 
-// Startup. The polkit agent, nm-applet and blueman-applet are deliberately
-// absent: niri runs xdg-desktop-autostart.target and /etc/xdg/autostart already
-// starts them. Hyprland ignored that target, which is why it needed exec-once.
-// The sleeps preserve Hyprland's ordering (tray applets after waybar).
 spawn-at-startup "sh" "-c" "bash ~/.config/scripts/niri/wallpaper_restore.sh"
 spawn-at-startup "sh" "-c" "bash ~/.config/scripts/shared/song_detail_writer.sh"
-// waybar needs its own config here: the shared one uses hyprland/workspaces
-// and hyprland/window, which do nothing under niri. config-niri swaps those
-// for niri/workspaces and niri/window.
 spawn-at-startup "sh" "-c" "sleep 1 && waybar -c ~/.config/waybar/config-niri"
 spawn-at-startup "sh" "-c" "sleep 2 && kdeconnect-indicator"
 spawn-at-startup "sh" "-c" "sleep 3 && /opt/Mullvad\\ VPN/mullvad-vpn"
@@ -150,29 +100,19 @@ spawn-at-startup "sh" "-c" "sleep 3 && wl-paste --type text --watch cliphist sto
 spawn-at-startup "sh" "-c" "sleep 3 && wl-paste --type image --watch cliphist store"
 spawn-at-startup "sh" "-c" "sleep 4 && rfkill unblock bluetooth && bluetoothctl power on"
 
-// The declared app workspaces below all get created on the first output niri
-// connects (HDMI-A-1), so that monitor logs in showing "code". This puts every
-// output back on a plain workspace. Early on purpose: it must finish before the
-// sleep-3/sleep-4 apps map their windows, or one lands on the wrong monitor.
 spawn-at-startup "sh" "-c" "sleep 1 && bash ~/.config/scripts/niri/workspace_startup.sh"
 
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
-// Animations stay at niri's defaults (on), unlike Hyprland where they were off.
 animations {
 }
 
-// Every window: draw the border AROUND the window, not behind it. niri uses the
-// border as the window background by default, which is invisible behind an
-// opaque window — the border simply never showed up. The corner radius makes it
-// follow the rounding GTK4/libadwaita apps apply to themselves.
 window-rule {
     draw-border-with-background false
     geometry-corner-radius 12
     clip-to-geometry true
 }
 
-// Hyprland: windowrule = match:class .*wezterm.*, opacity 0.8
 window-rule {
     match app-id=r#"^org\.wezfurlong\.wezterm$"#
     opacity 0.8
@@ -184,20 +124,6 @@ window-rule {
     open-floating true
 }
 
-// The app workspaces. A declared `workspace "name"` node is immortal — which is
-// exactly the point: nothing has to create, name or clean them up, so there is
-// no reaper daemon and no marker files. They were briefly named at runtime
-// instead, and the reaper that un-named them died mid-session (niri dropped its
-// IPC event stream for "reading events too slowly") leaving empty named
-// workspaces behind — the failure this replaces.
-//
-// The empties are only visible in the overview: workspace_nav.sh filters on
-// `.name == null`, so number and directional navigation skip them, and waybar
-// runs niri/workspaces with current-only.
-//
-// No open-on-output on purpose — KDL has no variables and monitor names are kept
-// to the `output` blocks and the monitor binds. They start on the first output
-// and workspace_app.sh pulls an empty one to the monitor in use on launch.
 workspace "code"
 workspace "github"
 workspace "whatsapp"
@@ -208,8 +134,6 @@ workspace "mail"
 workspace "signal"
 
 binds {
-    // ─── launchers (Alt trigger, Hyprland $my_trigger) ───────────────────────
-    // F-key and number-row variants both bound, as in Hyprland.
     Alt+T hotkey-overlay-title="Terminal: wezterm" { spawn-sh "wezterm start --always-new-process"; }
     Alt+Q hotkey-overlay-title="Files: nautilus" { spawn-sh "nautilus --new-window"; }
 
@@ -225,13 +149,6 @@ binds {
     Alt+F hotkey-overlay-title="Browser" { spawn-sh "flatpak run io.github.ungoogled_software.ungoogled_chromium --enable-features=MiddleClickAutoscroll"; }
     Shift+Alt+F hotkey-overlay-title="Browser (incognito, outside VPN)" { spawn-sh "mullvad-exclude flatpak run org.chromium.Chromium --incognito --enable-features=MiddleClickAutoscroll,AllowLegacyMV2Extensions --disable-features=ExtensionManifestV2Unsupported,ExtensionManifestV2Disabled,ExtensionsManifestV3Only"; }
 
-    // ─── app workspaces ─────────────────────────────────────────────────────
-    // workspace_app.sh emulates Hyprland's on-created-empty, which niri lacks.
-    // The workspaces are declared above, so "is the app running" is just "does
-    // its workspace hold a window". Empty -> the workspace moves to the monitor
-    // you are on and the app launches there; holding windows -> the key only
-    // moves focus to it, leaving it on its own monitor. webapp.sh builds the
-    // Chromium web-app command from a URL + profile id.
     Alt+C hotkey-overlay-title="Workspace: code" { spawn-sh "~/.config/scripts/niri/workspace_app.sh code zed"; }
     Alt+G hotkey-overlay-title="Workspace: github" { spawn-sh "~/.config/scripts/niri/workspace_app.sh github ~/.config/scripts/shared/webapp.sh https://github.com/ FCF18Wmt"; }
     Alt+W hotkey-overlay-title="Workspace: whatsapp" { spawn-sh "~/.config/scripts/niri/workspace_app.sh whatsapp ~/.config/scripts/shared/webapp.sh --mullvad https://web.whatsapp.com/ aW2IMaZ8"; }
@@ -250,28 +167,21 @@ binds {
     Mod+Shift+P { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move mail"; }
     Mod+Shift+N { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move signal"; }
 
-    // ─── session / system ───────────────────────────────────────────────────
-    // hyprlock works here: ext-session-lock-v1, no Hyprland IPC dependency.
     Super+L hotkey-overlay-title="Lock: hyprlock" { spawn "hyprlock"; }
     Mod+Escape hotkey-overlay-title="Power menu" { spawn-sh "bash ~/.config/scripts/system/power_menu.sh"; }
     Mod+D hotkey-overlay-title="Show desktop" { spawn-sh "~/.config/scripts/niri/show_desktop.sh"; }
     Mod+H hotkey-overlay-title="Toggle waybar" { spawn-sh "pkill -SIGUSR1 waybar"; }
     Mod+W hotkey-overlay-title="Wallpaper picker" { spawn-sh "~/.config/scripts/niri/wallpaper_picker.sh"; }
 
-    // Exit is Super+Alt+F4 only, as in Hyprland. The stock Mod+Shift+E and
-    // Ctrl+Alt+Delete quit binds are removed on purpose.
     Alt+4  repeat=false { close-window; }
     Alt+F4 repeat=false { close-window; }
     Mod+Alt+F4 { quit; }
 
-    // Mod+Escape is the power menu, so the shortcut-inhibitor escape hatch
-    // lives on Mod+Shift+Escape.
     Mod+Shift+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
     Mod+Shift+Slash { show-hotkey-overlay; }
     Mod+O repeat=false { toggle-overview; }
     Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }
 
-    // ─── media / brightness ─────────────────────────────────────────────────
     XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+ -l 1.0"; }
     XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
     XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
@@ -283,35 +193,19 @@ binds {
     XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
     XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
 
-    // ─── screenshots ────────────────────────────────────────────────────────
-    // grim, not niri's built-ins: the Hyprland bind captured ALL outputs into
-    // one image, while screenshot-screen only grabs the focused output.
     Print { spawn-sh "grim -t png - | tee \"$HOME/Pictures/Screenshots/$(date '+%y%m%d_%H-%M-%S').png\" | wl-copy -t image/png"; }
     Shift+Print { spawn-sh "grim -t png -g \"$(slurp)\" - | wl-copy -t image/png"; }
     Ctrl+Print { screenshot-screen; }
     Alt+Print { screenshot-window; }
 
-    // ─── monitors (the only place output names appear outside `output`) ──────
-    // Addressed by name, like Hyprland's $monitor_left / $monitor_right. The
-    // stock directional focus-monitor-* binds are dropped as redundant.
     Mod+Q       { focus-monitor "DP-1"; }
     Mod+E       { focus-monitor "HDMI-A-1"; }
     Mod+Shift+Q { move-column-to-monitor "DP-1"; }
     Mod+Shift+E { move-column-to-monitor "HDMI-A-1"; }
 
-    // toggle_monitors.sh keeps Hyprland's Super+M menu / Super+Shift+M all-on,
-    // so maximize sits on Mod+Ctrl+M.
     Mod+M       hotkey-overlay-title="Monitor menu" { spawn-sh "~/.config/scripts/niri/toggle_monitors.sh"; }
     Mod+Shift+M hotkey-overlay-title="All monitors on" { spawn-sh "~/.config/scripts/niri/toggle_monitors.sh on"; }
 
-    // ─── focus ──────────────────────────────────────────────────────────────
-    // Mod+H is the waybar toggle and Mod+L is the locker, so the stock vim-nav
-    // binds for those two are gone; arrows still navigate.
-    //
-    // Left/Right move between columns. Up/Down are vertical in niri's sense:
-    // the next window in the column when the column has one, otherwise the
-    // workspace above/below (workspaces stack vertically). Mod+J/K stay
-    // strictly in-column.
     Mod+Left  { focus-column-left; }
     Mod+Right { focus-column-right; }
     Mod+Up    { spawn-sh "~/.config/scripts/niri/workspace_nav.sh up"; }
@@ -323,7 +217,6 @@ binds {
     Mod+Tab { focus-window-previous; }
     Alt+Tab { focus-workspace-previous; }
 
-    // ─── move windows ───────────────────────────────────────────────────────
     Mod+Ctrl+Left  { move-column-left; }
     Mod+Ctrl+Right { move-column-right; }
     Mod+Ctrl+Up    { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move-up"; }
@@ -335,16 +228,6 @@ binds {
     Mod+Ctrl+Home  { move-column-to-first; }
     Mod+Ctrl+End   { move-column-to-last; }
 
-    // ─── workspaces ─────────────────────────────────────────────────────────
-    // niri workspaces are per-monitor already, which is what hyprsplit gave
-    // Hyprland. Mod+Shift+N is Hyprland's send-to-workspace; the stock
-    // Mod+Ctrl+N binds do the same and are kept as well.
-    //
-    // All of these go through workspace_nav.sh rather than niri's own
-    // focus-workspace: niri numbers are indices into each output's live
-    // workspace list, and the named app workspaces live in that same list, so
-    // Mod+3 could land on "discord". The script indexes the PLAIN workspaces
-    // only. N past the end clamps to the last one.
     Mod+1 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh focus 1"; }
     Mod+2 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh focus 2"; }
     Mod+3 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh focus 3"; }
@@ -390,7 +273,6 @@ binds {
     Mod+Shift+U         { move-workspace-down; }
     Mod+Shift+I         { move-workspace-up; }
 
-    // ─── scroll wheel ───────────────────────────────────────────────────────
     Mod+WheelScrollDown      cooldown-ms=150 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh next"; }
     Mod+WheelScrollUp        cooldown-ms=150 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh prev"; }
     Mod+Ctrl+WheelScrollDown cooldown-ms=150 { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move-next"; }
@@ -404,9 +286,6 @@ binds {
     Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
     Mod+Ctrl+Shift+WheelScrollUp   { move-column-left; }
 
-    // ─── size / layout ──────────────────────────────────────────────────────
-    // Mod+F is floating (Hyprland togglefloating), so maximize is Mod+Ctrl+M.
-    // Mod+Shift+arrows are Hyprland's resizeactive 30 / -30, in logical pixels.
     Mod+F { toggle-window-floating; }
     Mod+Shift+F { fullscreen-window; }
     Mod+Ctrl+M { maximize-column; }
