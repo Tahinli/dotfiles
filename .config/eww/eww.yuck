@@ -15,9 +15,9 @@
 
 (defvar byte_transform 1073741824)
 
-;; Music/Player info - using song_detail.sh script
+;; Music/Player info - single-source file maintained by song_detail_writer.sh
 (defpoll music :interval "1s"
-   `bash ~/.config/scripts/shared/song_detail.sh`)
+   `cat /tmp/song_detail_last 2>/dev/null`)
 
 (defpoll music-status :interval "1s"
    `playerctl status 2>/dev/null || echo "Stopped"`)
