@@ -4,9 +4,11 @@ STATE_FILE="/tmp/hypr_show_desktop"
 
 if [ -f "$STATE_FILE" ]; then
     source "$STATE_FILE"
-    hyprctl dispatch workspace "$WS_OTHER"
-    hyprctl dispatch swapactiveworkspaces "$MON1" "$MON2"
-    hyprctl dispatch workspace "$WS_FOCUSED"
+    if [ -n "$MON2" ]; then
+        hyprctl --batch "dispatch focusmonitor $MON2; dispatch workspace $WS_OTHER; dispatch focusmonitor $MON1; dispatch workspace $WS_FOCUSED"
+    else
+        hyprctl dispatch workspace "$WS_FOCUSED"
+    fi
     rm "$STATE_FILE"
 else
     mon_json=$(hyprctl monitors -j)
@@ -22,7 +24,11 @@ WS_FOCUSED=$WS_FOCUSED
 WS_OTHER=$WS_OTHER
 EOF
 
-    hyprctl dispatch workspace 998
-    hyprctl dispatch swapactiveworkspaces "$MON1" "$MON2"
-    hyprctl dispatch workspace 999
+    # one empty dummy workspace per monitor; no swapactiveworkspaces —
+    # swaps rebind workspaces to the wrong monitor and confuse waybar
+    if [ -n "$MON2" ]; then
+        hyprctl --batch "dispatch focusmonitor $MON2; dispatch workspace 998; dispatch focusmonitor $MON1; dispatch workspace 999"
+    else
+        hyprctl dispatch workspace 999
+    fi
 fi

@@ -7,7 +7,7 @@ HDMI_CONFIG="HDMI-A-1, 1920x1080@75, 2560x0, 1, bitdepth, 10"
 
 case "${1:-menu}" in
     menu)
-        menu=$(echo -e "🖥️ All Monitors Off\n🖥️ DP-1 Off\n🖥️ HDMI-A-1 Off\n❌ Cancel" | rofi -dmenu -p "Monitors" -i)
+        menu=$(echo -e "🖥️ All Monitors Off\n🖥️ DP-1 Off\n🖥️ HDMI-A-1 Off\n💡 All Monitors On\n💡 DP-1 On\n💡 HDMI-A-1 On\n❌ Cancel" | rofi -dmenu -p "Monitors" -i)
 
         case "$menu" in
             "🖥️ All Monitors Off")
@@ -19,7 +19,17 @@ case "${1:-menu}" in
                 hyprctl dispatch dpms off DP-1
                 ;;
             "🖥️ HDMI-A-1 Off")
-                hyprctl dispatch dpms off HDMI-A-1
+                hyprctl keyword monitor "HDMI-A-1, disable"
+                ;;
+            "💡 All Monitors On")
+                hyprctl dispatch dpms on DP-1
+                hyprctl keyword monitor "$HDMI_CONFIG"
+                ;;
+            "💡 DP-1 On")
+                hyprctl dispatch dpms on DP-1
+                ;;
+            "💡 HDMI-A-1 On")
+                hyprctl keyword monitor "$HDMI_CONFIG"
                 ;;
             "❌ Cancel")
                 ;;
