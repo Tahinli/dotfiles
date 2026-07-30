@@ -17,10 +17,6 @@ export PYTHON_VENV_NAME=".venv"
 #ZSH_THEME="amuse"
 ZSH_THEME="clean"
 
-
-
-
-
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
 # a theme from this variable instead of looking in $ZSH/themes/
@@ -81,7 +77,6 @@ ZSH_THEME="clean"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-
 
 # DUDE DONT FORGET TO INSTALL via SYSTEM PACKAGE OR AS A PLUGIN
 # zsh-syntax-highlighting
