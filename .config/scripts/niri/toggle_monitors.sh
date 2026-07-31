@@ -17,7 +17,6 @@ case "${1:-menu}" in
                 niri msg output "$RIGHT_MONITOR" off
                 ;;
             "💡 All Monitors On")
-                niri msg action power-on-monitors
                 niri msg output "$LEFT_MONITOR" on
                 niri msg output "$RIGHT_MONITOR" on
                 ;;
@@ -32,7 +31,6 @@ case "${1:-menu}" in
         esac
         ;;
     on)
-        niri msg action power-on-monitors
         niri msg output "$LEFT_MONITOR" on
         niri msg output "$RIGHT_MONITOR" on
         ;;
