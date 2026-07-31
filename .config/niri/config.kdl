@@ -169,9 +169,10 @@ binds {
 
     Super+L hotkey-overlay-title="Lock: hyprlock" { spawn "hyprlock"; }
     Mod+Escape hotkey-overlay-title="Power menu" { spawn-sh "bash ~/.config/scripts/system/power_menu.sh"; }
-    Mod+D hotkey-overlay-title="Show desktop" { spawn-sh "~/.config/scripts/niri/show_desktop.sh"; }
+    Mod+X hotkey-overlay-title="Show desktop" { spawn-sh "~/.config/scripts/niri/show_desktop.sh"; }
     Mod+H hotkey-overlay-title="Toggle waybar" { spawn-sh "pkill -SIGUSR1 waybar"; }
-    Mod+W hotkey-overlay-title="Wallpaper picker" { spawn-sh "~/.config/scripts/niri/wallpaper_picker.sh"; }
+    Mod+B hotkey-overlay-title="Wallpaper picker" { spawn-sh "~/.config/scripts/niri/wallpaper_picker.sh"; }
+    Mod+Shift+M hotkey-overlay-title="Monitors menu" { spawn-sh "~/.config/scripts/niri/toggle_monitors.sh"; }
 
     Alt+4  repeat=false { close-window; }
     Alt+F4 repeat=false { close-window; }
@@ -203,8 +204,12 @@ binds {
     Mod+Shift+Q { move-column-to-monitor "DP-1"; }
     Mod+Shift+E { move-column-to-monitor "HDMI-A-1"; }
 
-    Mod+M       hotkey-overlay-title="Monitor menu" { spawn-sh "~/.config/scripts/niri/toggle_monitors.sh"; }
-    Mod+Shift+M hotkey-overlay-title="All monitors on" { spawn-sh "~/.config/scripts/niri/toggle_monitors.sh on"; }
+
+    // Left-hand WASD navigation (right hand stays on mouse)
+    Mod+A     { focus-column-or-monitor-left; }
+    Mod+D     { focus-column-or-monitor-right; }
+    Mod+W     { spawn-sh "~/.config/scripts/niri/workspace_nav.sh up"; }
+    Mod+S     { spawn-sh "~/.config/scripts/niri/workspace_nav.sh down"; }
 
     Mod+Left  { focus-column-left; }
     Mod+Right { focus-column-right; }
@@ -216,6 +221,12 @@ binds {
     Mod+End   { focus-column-last; }
     Mod+Tab { focus-window-previous; }
     Alt+Tab { focus-workspace-previous; }
+
+    // Left-hand WASD moving
+    Mod+Ctrl+A     { move-column-left-or-to-monitor-left; }
+    Mod+Ctrl+D     { move-column-right-or-to-monitor-right; }
+    Mod+Ctrl+W     { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move-up"; }
+    Mod+Ctrl+S     { spawn-sh "~/.config/scripts/niri/workspace_nav.sh move-down"; }
 
     Mod+Ctrl+Left  { move-column-left; }
     Mod+Ctrl+Right { move-column-right; }
@@ -288,7 +299,7 @@ binds {
 
     Mod+F { toggle-window-floating; }
     Mod+Shift+F { fullscreen-window; }
-    Mod+Ctrl+M { maximize-column; }
+    Mod+M { maximize-column; }
     Mod+Ctrl+F { expand-column-to-available-width; }
     Mod+Shift+V { switch-focus-between-floating-and-tiling; }
 
@@ -312,5 +323,5 @@ binds {
     Mod+BracketRight { consume-or-expel-window-right; }
     Mod+Comma  { consume-window-into-column; }
     Mod+Period { expel-window-from-column; }
-    Mod+Ctrl+W { toggle-column-tabbed-display; }
+    Mod+Ctrl+T { toggle-column-tabbed-display; }
 }
