@@ -23,6 +23,7 @@ input {
     trackpoint {
     }
 
+    wake-monitors-on-input false
 }
 
 prefer-no-csd
@@ -173,6 +174,7 @@ binds {
     Mod+H hotkey-overlay-title="Toggle waybar" { spawn-sh "pkill -SIGUSR1 waybar"; }
     Mod+B hotkey-overlay-title="Wallpaper picker" { spawn-sh "~/.config/scripts/niri/wallpaper_picker.sh"; }
     Mod+Shift+M hotkey-overlay-title="Monitors menu" { spawn-sh "~/.config/scripts/niri/toggle_monitors.sh"; }
+    Mod+Ctrl+M hotkey-overlay-title="Wake monitors" { power-on-monitors; }
 
     Alt+4  repeat=false { close-window; }
     Alt+F4 repeat=false { close-window; }
