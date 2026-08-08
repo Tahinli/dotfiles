@@ -1,0 +1,71 @@
+[KDE]
+widgetStyle=qt6ct-style
+
+[General]
+ColorScheme=Wallust
+
+[Colors:Window]
+BackgroundNormal=mix({{background}}, {{color1}}, 0.35)
+BackgroundAlternate=mix({{background}}, {{color1}}, 0.40)
+ForegroundNormal={{foreground}}
+ForegroundActive={{foreground}}
+ForegroundInactive={{color8}}
+ForegroundLink=mix({{color4}}, {{foreground}}, 0.75)
+ForegroundVisited=mix({{color5}}, {{foreground}}, 0.6)
+ForegroundNegative=mix(#e01b24, {{color1}}, 0.3)
+ForegroundNeutral=mix(#f5c211, {{color3}}, 0.3)
+ForegroundPositive=mix(#2ec27e, {{color2}}, 0.3)
+DecorationFocus=mix({{color4}}, {{foreground}}, 0.3)
+DecorationHover=mix({{color4}}, {{foreground}}, 0.3)
+
+[Colors:View]
+BackgroundNormal=mix({{background}}, {{color1}}, 0.30)
+BackgroundAlternate=mix({{background}}, {{color1}}, 0.35)
+ForegroundNormal={{foreground}}
+ForegroundActive={{foreground}}
+ForegroundInactive={{color8}}
+ForegroundLink=mix({{color4}}, {{foreground}}, 0.75)
+ForegroundVisited=mix({{color5}}, {{foreground}}, 0.6)
+ForegroundNegative=mix(#e01b24, {{color1}}, 0.3)
+ForegroundNeutral=mix(#f5c211, {{color3}}, 0.3)
+ForegroundPositive=mix(#2ec27e, {{color2}}, 0.3)
+DecorationFocus=mix({{color4}}, {{foreground}}, 0.3)
+DecorationHover=mix({{color4}}, {{foreground}}, 0.3)
+
+[Colors:Button]
+BackgroundNormal=mix({{background}}, {{color1}}, 0.45)
+BackgroundAlternate=mix({{background}}, {{color1}}, 0.55)
+ForegroundNormal={{foreground}}
+ForegroundActive={{foreground}}
+ForegroundInactive={{color8}}
+ForegroundLink=mix({{color4}}, {{foreground}}, 0.75)
+ForegroundVisited=mix({{color5}}, {{foreground}}, 0.6)
+ForegroundNegative=mix(#e01b24, {{color1}}, 0.3)
+ForegroundNeutral=mix(#f5c211, {{color3}}, 0.3)
+ForegroundPositive=mix(#2ec27e, {{color2}}, 0.3)
+DecorationFocus=mix({{color4}}, {{foreground}}, 0.3)
+DecorationHover=mix({{color4}}, {{foreground}}, 0.3)
+
+[Colors:Selection]
+BackgroundNormal=mix({{color4}}, {{foreground}}, 0.3)
+BackgroundAlternate=mix({{color4}}, {{foreground}}, 0.3)
+ForegroundNormal={{color15}}
+ForegroundActive={{color15}}
+ForegroundInactive={{color15}}
+ForegroundLink={{color15}}
+ForegroundVisited={{color15}}
+ForegroundNegative=mix(#e01b24, {{color1}}, 0.3)
+ForegroundNeutral=mix(#f5c211, {{color3}}, 0.3)
+ForegroundPositive=mix(#2ec27e, {{color2}}, 0.3)
+DecorationFocus=mix({{color4}}, {{foreground}}, 0.3)
+DecorationHover=mix({{color4}}, {{foreground}}, 0.3)
+
+[Colors:Tooltip]
+BackgroundNormal=mix({{background}}, {{color1}}, 0.40)
+BackgroundAlternate=mix({{background}}, {{color1}}, 0.40)
+ForegroundNormal={{foreground}}
+
+[Colors:Header]
+BackgroundNormal=mix({{background}}, {{color1}}, 0.40)
+BackgroundAlternate=mix({{background}}, {{color1}}, 0.40)
+ForegroundNormal={{foreground}}

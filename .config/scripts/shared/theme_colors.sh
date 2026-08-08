@@ -41,8 +41,10 @@ with open('$KDEGLOBALS', 'w') as f:
 "
 fi
 
-# Resolve mix() in GTK CSS / gtkrc files
-for css in ~/.config/gtk-4.0/gtk.css ~/.config/gtk-4.0/gtk-dark.css ~/.config/gtk-3.0/gtk.css ~/.gtkrc-2.0.mine; do
+# Resolve mix() in GTK CSS / gtkrc files, and in the Qt color schemes.
+# The Qt confs must be handled here, before the #RRGGBB -> #ffRRGGBB pass below,
+# because the mix() regex only matches 6-digit hex.
+for css in ~/.config/gtk-4.0/gtk.css ~/.config/gtk-4.0/gtk-dark.css ~/.config/gtk-3.0/gtk.css ~/.gtkrc-2.0.mine ~/.config/qt5ct/colors/wallust.conf ~/.config/qt6ct/colors/wallust.conf; do
     [ -f "$css" ] || continue
     python3 -c "
 import re
@@ -100,7 +102,8 @@ print(m('$C4', '$FG', 0.3))
     MIXED_BTN=$(echo "$COMPUTED" | sed -n '2p')
     MIXED_ACCENT=$(echo "$COMPUTED" | sed -n '3p')
 
-    # Replace surface roles: Base(9), Window(10), AlternateBase(16), ToolTipBase(17) with MIXED
+    # Replace surface roles: Base(9), Window(10), AlternateBase(16), ToolTipBase(18) with MIXED
+    # NOTE: role order is QPalette::ColorRole — index 17 is NoRole, ToolTipBase is 18.
     # Replace Button(1) with MIXED_BTN
     # Replace Highlight(12) and pos 20 with MIXED_ACCENT
     python3 -c "
@@ -116,7 +119,7 @@ for line in lines:
         out.append(line); continue
     key, vals = line.strip().split('=', 1)
     cols = [v.strip() for v in vals.split(',')]
-    for i in [9, 10, 16, 17]:
+    for i in [9, 10, 16, 18]:
         if i < len(cols) and cols[i] == c1:
             cols[i] = mixed
     if 1 < len(cols) and cols[1] == c1:

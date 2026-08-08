@@ -3,21 +3,24 @@
 @define-color accent_fg_color {{color15}};
 @define-color accent_color mix({{color4}}, {{foreground}}, 0.3);
 
-@define-color destructive_bg_color mix({{color1}}, {{foreground}}, 0.3);
+/* Semantic colors keep their canonical hue and only take a palette tint:
+   straight {{color1}}/{{color3}} made "destructive"/"error" brown and "warning"
+   blue, i.e. the status signal was lost. */
+@define-color destructive_bg_color mix(#e01b24, {{color1}}, 0.3);
 @define-color destructive_fg_color {{color15}};
-@define-color destructive_color mix({{color1}}, {{foreground}}, 0.3);
+@define-color destructive_color mix(#e01b24, {{color1}}, 0.3);
 
-@define-color success_bg_color {{color2}};
+@define-color success_bg_color mix(#2ec27e, {{color2}}, 0.3);
 @define-color success_fg_color {{color15}};
-@define-color success_color {{color2}};
+@define-color success_color mix(#2ec27e, {{color2}}, 0.3);
 
-@define-color warning_bg_color {{color3}};
+@define-color warning_bg_color mix(#f5c211, {{color3}}, 0.3);
 @define-color warning_fg_color {{background}};
-@define-color warning_color {{color3}};
+@define-color warning_color mix(#f5c211, {{color3}}, 0.3);
 
-@define-color error_bg_color mix({{color1}}, {{foreground}}, 0.3);
+@define-color error_bg_color mix(#e01b24, {{color1}}, 0.3);
 @define-color error_fg_color {{color15}};
-@define-color error_color mix({{color1}}, {{foreground}}, 0.3);
+@define-color error_color mix(#e01b24, {{color1}}, 0.3);
 
 @define-color window_bg_color mix({{background}}, {{color1}}, 0.35);
 @define-color window_fg_color {{foreground}};
@@ -56,7 +59,9 @@ headerbar {
   color: {{foreground}};
 }
 
-.view, list, row, treeview {
+/* NOTE: no bare `row` here — `row` also matches GtkListItemWidget inside
+   dropdowns/popovers, which paints an opaque box behind their labels. */
+.view, list, treeview {
   background-color: mix({{background}}, {{color1}}, 0.3);
   color: {{foreground}};
 }
@@ -89,9 +94,10 @@ modelbutton:active {
   background-color: alpha({{foreground}}, 0.15);
 }
 
+/* NOTE: `.toolbar` is padding-only in Adwaita. Giving it a background paints
+   opaque blocks over AdwToolbarView bottom bars (e.g. the nautilus file
+   chooser action bar), so it is deliberately absent here. */
 .osd,
-.toolbar,
-box.toolbar,
 .background.osd,
 .flat-style-toolbar {
   background-color: mix({{background}}, {{color1}}, 0.4);
@@ -107,15 +113,23 @@ viewswitcher button,
 stackswitcher,
 stackswitcher button,
 .stack-switcher button,
-columnview header,
-columnview header button,
-treeview.view header button,
 header.view {
   background-color: mix({{background}}, {{color1}}, 0.4);
   background-image: none;
   color: {{foreground}};
   border-color: mix({{background}}, {{color1}}, 0.5);
   box-shadow: none;
+}
+
+/* List/column headers sit on the view background upstream, separator only.
+   A raised band here reads as a stray strip under the header bar. */
+columnview header,
+columnview > header,
+treeview.view header {
+  background-color: transparent;
+  background-image: none;
+  box-shadow: none;
+  border-bottom: 1px solid mix({{background}}, {{color1}}, 0.5);
 }
 
 stackswitcher button:checked,
@@ -164,7 +178,7 @@ dialog button.suggested-action {
 button.destructive-action,
 .dialog-action-area button.destructive-action,
 dialog button.destructive-action {
-  background-color: mix({{color1}}, {{foreground}}, 0.3);
+  background-color: mix(#e01b24, {{color1}}, 0.3);
   background-image: none;
   color: {{color15}};
   box-shadow: none;
@@ -191,7 +205,7 @@ messagedialog button.suggested-action {
 dialog button.destructive-action,
 .dialog-action-area button.destructive-action,
 messagedialog button.destructive-action {
-  background-color: mix({{color1}}, {{foreground}}, 0.3);
+  background-color: mix(#e01b24, {{color1}}, 0.3);
   color: {{color15}};
 }
 
@@ -203,9 +217,9 @@ spinbutton text,
 combobox,
 combobox button,
 combobox entry,
-dropdown,
-dropdown button,
-dropdown > button,
+dropdown:not(.flat-dropdown),
+dropdown:not(.flat-dropdown) button,
+dropdown:not(.flat-dropdown) > button,
 fontbutton,
 fontbutton button,
 filechooserbutton,
@@ -337,4 +351,52 @@ progressbar trough {
 progressbar progress {
   background-color: mix({{color4}}, {{foreground}}, 0.3);
   background-image: none;
+}
+
+/* Chrome buttons (header bars, nautilus path bar, list headers) must stay flat:
+   the generic `button:not(...)` rule above otherwise paints a card surface over
+   the app's own flat styling, since our CSS loads at PRIORITY_USER and beats the
+   app's gresource CSS. The :not() chains exist only to out-specify it. */
+headerbar button:not(.color):not(.colorsetter):not(.flat):not(.image-button):not(.suggested-action):not(.destructive-action):not(:checked),
+windowhandle button:not(.color):not(.colorsetter):not(.flat):not(.image-button):not(.suggested-action):not(.destructive-action):not(:checked),
+.titlebar button:not(.color):not(.colorsetter):not(.flat):not(.image-button):not(.suggested-action):not(.destructive-action):not(:checked),
+.nautilus-pathbar button:not(.color):not(.colorsetter):not(.flat):not(.image-button):not(.suggested-action):not(.destructive-action):not(:checked),
+button.nautilus-path-button:not(.color):not(.colorsetter):not(.flat):not(.image-button):not(.suggested-action):not(.destructive-action):not(:checked),
+columnview header button:not(.color):not(.colorsetter):not(.flat):not(.image-button):not(.suggested-action):not(.destructive-action):not(:checked),
+treeview.view header button:not(.color):not(.colorsetter):not(.flat):not(.image-button):not(.suggested-action):not(.destructive-action):not(:checked),
+header.view button:not(.color):not(.colorsetter):not(.flat):not(.image-button):not(.suggested-action):not(.destructive-action):not(:checked) {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  box-shadow: none;
+}
+
+headerbar button:not(.color):not(.colorsetter):not(.flat):not(.image-button):not(.suggested-action):not(.destructive-action):not(:checked):hover,
+windowhandle button:not(.color):not(.colorsetter):not(.flat):not(.image-button):not(.suggested-action):not(.destructive-action):not(:checked):hover,
+.titlebar button:not(.color):not(.colorsetter):not(.flat):not(.image-button):not(.suggested-action):not(.destructive-action):not(:checked):hover,
+.nautilus-pathbar button:not(.color):not(.colorsetter):not(.flat):not(.image-button):not(.suggested-action):not(.destructive-action):not(:checked):hover,
+button.nautilus-path-button:not(.color):not(.colorsetter):not(.flat):not(.image-button):not(.suggested-action):not(.destructive-action):not(:checked):hover,
+columnview header button:not(.color):not(.colorsetter):not(.flat):not(.image-button):not(.suggested-action):not(.destructive-action):not(:checked):hover,
+treeview.view header button:not(.color):not(.colorsetter):not(.flat):not(.image-button):not(.suggested-action):not(.destructive-action):not(:checked):hover,
+header.view button:not(.color):not(.colorsetter):not(.flat):not(.image-button):not(.suggested-action):not(.destructive-action):not(:checked):hover {
+  background-color: alpha({{foreground}}, 0.10);
+}
+
+/* Flat dropdowns (nautilus file chooser filter). The :not() chain only exists
+   to out-specify the generic `button:not(...)` rule above. */
+dropdown.flat-dropdown > button:not(.color):not(.colorsetter):not(.flat):not(.image-button):not(.suggested-action):not(.destructive-action) {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  box-shadow: none;
+}
+
+dropdown.flat-dropdown > button:not(.color):not(.colorsetter):not(.flat):not(.image-button):not(.suggested-action):not(.destructive-action):hover {
+  background-color: alpha({{foreground}}, 0.08);
+}
+
+dropdown.flat-dropdown > button:not(.color):not(.colorsetter):not(.flat):not(.image-button):not(.suggested-action):not(.destructive-action):checked,
+dropdown.flat-dropdown > button:not(.color):not(.colorsetter):not(.flat):not(.image-button):not(.suggested-action):not(.destructive-action):active {
+  background-color: alpha({{foreground}}, 0.14);
+  color: {{foreground}};
 }

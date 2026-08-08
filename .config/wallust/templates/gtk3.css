@@ -16,9 +16,12 @@
 @define-color theme_unfocused_selected_fg_color {{color15}};
 @define-color borders mix({{background}}, {{color1}}, 0.5);
 @define-color unfocused_borders mix({{background}}, {{color1}}, 0.45);
-@define-color warning_color {{color3}};
-@define-color error_color {{color1}};
-@define-color success_color {{color2}};
+/* Semantic colors keep their canonical hue and only take a palette tint:
+   straight {{color1}}/{{color3}} made "error" grey and "warning" blue, i.e. the
+   status signal was lost. */
+@define-color warning_color mix(#f5c211, {{color3}}, 0.3);
+@define-color error_color mix(#e01b24, {{color1}}, 0.3);
+@define-color success_color mix(#2ec27e, {{color2}}, 0.3);
 @define-color insensitive_bg_color mix({{background}}, {{color1}}, 0.3);
 @define-color insensitive_fg_color {{color8}};
 @define-color insensitive_base_color mix({{background}}, {{color1}}, 0.25);
@@ -102,9 +105,87 @@ headerbar:backdrop {
   color: {{foreground}};
 }
 
-entry {
+/* Text fields need a visible edge: the base color is only a few steps away
+   from the window background, so a borderless entry reads as a bare label. */
+entry,
+spinbutton,
+spinbutton entry {
   background-color: mix({{background}}, {{color1}}, 0.3);
   color: {{foreground}};
+  border: 1px solid mix({{background}}, {{color1}}, 0.6);
+  border-radius: 6px;
+}
+
+entry:focus,
+entry:focus-within,
+spinbutton:focus-within {
+  border-color: mix({{color4}}, {{foreground}}, 0.3);
+}
+
+/* List/tree headers must not take the generic button surface below. */
+treeview.view header button,
+treeview.view header button:hover,
+columnview header button,
+.view header button {
+  background-color: transparent;
+  background-image: none;
+  box-shadow: none;
+  border: none;
+  border-bottom: 1px solid mix({{background}}, {{color1}}, 0.5);
+  border-right: 1px solid mix({{background}}, {{color1}}, 0.5);
+}
+
+/* Disabled affordance. Our sheet loads at PRIORITY_USER, and GTK resolves
+   provider priority before specificity, so the `* { color }` rule above beats
+   every Adwaita :disabled rule — disabled widgets have to be restated here. */
+*:disabled,
+label:disabled,
+button:disabled,
+button:disabled label,
+menuitem:disabled,
+menuitem:disabled label,
+entry:disabled,
+spinbutton:disabled,
+combobox:disabled,
+checkbutton:disabled,
+radiobutton:disabled {
+  color: {{color8}};
+}
+
+button:disabled,
+button.text-button:disabled,
+button.image-button:disabled,
+headerbar button:disabled {
+  background-color: mix({{background}}, {{color1}}, 0.4);
+  background-image: none;
+  border-color: mix({{background}}, {{color1}}, 0.45);
+}
+
+entry:disabled,
+spinbutton:disabled,
+spinbutton entry:disabled {
+  background-color: mix({{background}}, {{color1}}, 0.25);
+  border-color: mix({{background}}, {{color1}}, 0.45);
+}
+
+/* Level bars otherwise fall back to Adwaita's blue. */
+levelbar trough,
+levelbar block.empty {
+  background-color: mix({{background}}, {{color1}}, 0.4);
+  border-color: mix({{background}}, {{color1}}, 0.5);
+}
+
+levelbar block,
+levelbar block.filled,
+levelbar block.full,
+levelbar block.high {
+  background-color: mix({{color4}}, {{foreground}}, 0.3);
+  border-color: mix({{color4}}, {{foreground}}, 0.3);
+}
+
+levelbar block.low {
+  background-color: mix(#f5c211, {{color3}}, 0.3);
+  border-color: mix(#f5c211, {{color3}}, 0.3);
 }
 
 button,
@@ -165,10 +246,10 @@ button.suggested-action {
 }
 
 button.destructive-action {
-  background-color: mix({{color1}}, {{foreground}}, 0.3);
+  background-color: mix(#e01b24, {{color1}}, 0.3);
   background-image: none;
   color: {{color15}};
-  border-color: mix({{color1}}, {{foreground}}, 0.3);
+  border-color: mix(#e01b24, {{color1}}, 0.3);
   box-shadow: none;
 }
 
@@ -183,9 +264,31 @@ tooltip {
   color: {{foreground}};
 }
 
-menu {
+/* Popovers/menus float over content, so they need their own surface AND a
+   visible edge — the `.background` rule above otherwise gives them exactly the
+   window color and they read as if they had no frame at all. */
+menu,
+popover,
+popover.background,
+popover.background > contents,
+popover > contents {
   background-color: mix({{background}}, {{color1}}, 0.4);
   color: {{foreground}};
+  border: 1px solid mix({{background}}, {{color1}}, 0.6);
+  border-radius: 8px;
+}
+
+popover modelbutton:hover,
+popover .menuitem:hover,
+popover button:hover {
+  background-color: mix({{background}}, {{color1}}, 0.55);
+  color: {{foreground}};
+}
+
+tooltip.background,
+tooltip.background > box {
+  border: 1px solid mix({{background}}, {{color1}}, 0.6);
+  border-radius: 6px;
 }
 
 menuitem:hover {
