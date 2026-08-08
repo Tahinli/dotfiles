@@ -6,13 +6,17 @@
 # Configure ~/.gtkrc-2.0:
 # - Force gtk-theme-name to Raleigh (minimal, no pixmap engine, lets our colors through)
 # - Ensure our include is parsed LAST so our styles win
+#
+# nwg-look owns this file when it is installed, but GTK2 will not read our
+# generated .mine without the include, and on a fresh machine (or without
+# nwg-look) the file does not exist at all — so create it instead of bailing out.
 GTKRC="$HOME/.gtkrc-2.0"
-MINE_INC='include "/home/tahinli/.gtkrc-2.0.mine"'
-if [ -f "$GTKRC" ] && grep -qF "$MINE_INC" "$GTKRC"; then
-    grep -vF "$MINE_INC" "$GTKRC" | sed 's/^gtk-theme-name=.*/gtk-theme-name="Raleigh"/' > "$GTKRC.tmp"
-    echo "$MINE_INC" >> "$GTKRC.tmp"
-    mv "$GTKRC.tmp" "$GTKRC"
-fi
+MINE_INC="include \"$HOME/.gtkrc-2.0.mine\""
+[ -f "$GTKRC" ] || : > "$GTKRC"
+grep -q '^gtk-theme-name=' "$GTKRC" || echo 'gtk-theme-name="Raleigh"' >> "$GTKRC"
+grep -vF "$MINE_INC" "$GTKRC" | sed 's/^gtk-theme-name=.*/gtk-theme-name="Raleigh"/' > "$GTKRC.tmp"
+echo "$MINE_INC" >> "$GTKRC.tmp"
+mv "$GTKRC.tmp" "$GTKRC"
 
 # Convert hex colors to KDE's R,G,B integer format in kdeglobals
 KDEGLOBALS="$HOME/.config/kdeglobals"
