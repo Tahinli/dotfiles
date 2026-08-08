@@ -125,6 +125,19 @@ window-rule {
     open-floating true
 }
 
+// Hunt: Showdown — fullscreen so the surface matches the 2560x1440 X screen the
+// game maps input to; floating clamps to the working area (-20px) and offsets clicks
+window-rule {
+    match app-id=r#"^steam_app_594650$"#
+    open-fullscreen true
+    border { off; }
+    focus-ring { off; }
+    shadow { off; }
+    geometry-corner-radius 0
+    clip-to-geometry false
+    draw-border-with-background false
+}
+
 workspace "code"
 workspace "github"
 workspace "whatsapp"
