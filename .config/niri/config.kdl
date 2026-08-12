@@ -75,7 +75,7 @@ layout {
     }
 
     border {
-        width 2
+        width 3
 
         // WALLUST-GRADIENT
         active-gradient from="#4D0830" to="#7E420A" angle=90 in="oklch"
@@ -91,6 +91,7 @@ environment {
     XCURSOR_SIZE "24"
 }
 
+spawn-at-startup "sh" "-c" "sleep 1 && /usr/libexec/polkit-mate-authentication-agent-1"
 spawn-at-startup "sh" "-c" "bash ~/.config/scripts/niri/wallpaper_restore.sh"
 spawn-at-startup "sh" "-c" "bash ~/.config/scripts/shared/song_detail_writer.sh"
 spawn-at-startup "sh" "-c" "sleep 1 && waybar -c ~/.config/waybar/config-niri"
@@ -109,8 +110,13 @@ animations {
 }
 
 window-rule {
-    draw-border-with-background false
-    geometry-corner-radius 12
+    // background fill in border color: the border's inner AA edge and the app's
+    // corner AA edge share a line; without the fill the backdrop bleeds through
+    // that seam. Transparent apps opt back out per-rule (wezterm below).
+    draw-border-with-background true
+    // libadwaita 1.6+ draws 15; must stay >= the largest toolkit radius so
+    // clip-to-geometry dominates and the border hugs every corner. 16 = 1px margin.
+    geometry-corner-radius 16
     clip-to-geometry true
 }
 

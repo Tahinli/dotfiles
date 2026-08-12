@@ -23,7 +23,7 @@ if [ ! -f "$WALLPAPER" ]; then
 fi
 
 if [ ! -f "$WALLPAPER" ]; then
-    WALLPAPER=$(find "$FALLBACK_DIR" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) | sort | head -1)
+    WALLPAPER=$(find "$FALLBACK_DIR" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' -o -iname '*.gif' \) | sort | head -1)
 fi
 
 if [ -f "$WALLPAPER" ]; then

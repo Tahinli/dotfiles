@@ -61,7 +61,14 @@ focus | move)
     ;;
 next | move-next)
     if [ "$pos" -lt 0 ]; then
-        target="${plain[0]}"
+        # on a named workspace: nearest unnamed one below it
+        for idx in "${plain[@]}"; do
+            if [ "$idx" -gt "$current_idx" ]; then
+                target="$idx"
+                break
+            fi
+        done
+        [ -n "$target" ] || exit 0
     else
         i=$((pos + 1))
         [ "$i" -ge "${#plain[@]}" ] && i=$((${#plain[@]} - 1))
@@ -70,7 +77,15 @@ next | move-next)
     ;;
 prev | move-prev)
     if [ "$pos" -lt 0 ]; then
-        target="${plain[0]}"
+        # on a named workspace: nearest unnamed one above it
+        for idx in "${plain[@]}"; do
+            if [ "$idx" -lt "$current_idx" ]; then
+                target="$idx"
+            else
+                break
+            fi
+        done
+        [ -n "$target" ] || exit 0
     else
         i=$((pos - 1))
         [ "$i" -lt 0 ] && i=0

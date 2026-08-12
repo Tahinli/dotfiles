@@ -14,16 +14,17 @@ for thumb in "$THUMB_DIR"/*.png; do
     fi
 done
 
-find "$WALLPAPER_DIR" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) | while read -r img; do
+find "$WALLPAPER_DIR" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' -o -iname '*.gif' \) | while read -r img; do
     name=$(basename "$img")
     thumb="$THUMB_DIR/$name.png"
     if [ ! -f "$thumb" ] || [ "$img" -nt "$thumb" ]; then
-        magick "$img" -thumbnail 128x80 "$thumb" &
+        # [0] = first frame only; without it animated gifs expand into one PNG per frame
+        magick "${img}[0]" -thumbnail 128x80 "$thumb" &
     fi
 done
 wait
 
-SELECTED=$(find "$WALLPAPER_DIR" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) | sort | while read -r img; do
+SELECTED=$(find "$WALLPAPER_DIR" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' -o -iname '*.gif' \) | sort | while read -r img; do
     name=$(basename "$img")
     echo -en "${name}\0icon\x1f${THUMB_DIR}/${name}.png\n"
 done | rofi -dmenu -p "Wallpaper" -i -show-icons \
