@@ -148,9 +148,7 @@
   },
   "cpu": {
     "interval": 1,
-    "format": "{usage}%",
-    "tooltip": true,
-    "tooltip-format": "CPU {usage}%\nload {load}\nfreq {avg_frequency} GHz (max {max_frequency})"
+    "format": "{usage}%"
   },
   "memory": {
     "interval": 1,
