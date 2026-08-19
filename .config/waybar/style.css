@@ -45,3 +45,16 @@
     box-shadow: none;
     font-size: 16px;
 }
+
+/* USB + power live behind the ⋯, which itself lives inside the ☰ tray drawer,
+   so none of the three claims bar width until the hamburger is hovered. */
+#custom-system-toggle,
+#custom-usb,
+#custom-power {
+    padding: 0 6px;
+    font-size: 15px;
+}
+
+#custom-usb.unplugged {
+    color: #ff6b6b;
+}

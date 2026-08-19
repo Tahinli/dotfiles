@@ -86,6 +86,24 @@
     "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
   },
 
+  "custom/usb": {
+    "format": "{}",
+    "exec": "bash ~/.config/scripts/system/usb_menu.sh waybar",
+    "interval": 10,
+    "return-type": "json",
+    "tooltip": true,
+    "on-click": "bash ~/.config/scripts/system/usb_menu.sh menu",
+    "on-click-right": "bash ~/.config/scripts/system/usb_menu.sh replug-keyboard",
+    "on-click-middle": "bash ~/.config/scripts/system/usb_menu.sh all-replug"
+  },
+
+  "custom/power": {
+    "format": "\uf011",
+    "tooltip": true,
+    "tooltip-format": "Power menu (Mod+Escape)",
+    "on-click": "bash ~/.config/scripts/system/power_menu.sh"
+  },
+
   "custom/camera": {
     "format": "{text}",
     "exec": "bash ~/.config/scripts/waybar/camera_monitor.sh bar",
@@ -130,7 +148,9 @@
   },
   "cpu": {
     "interval": 1,
-    "format": "{usage}%"
+    "format": "{usage}%",
+    "tooltip": true,
+    "tooltip-format": "CPU {usage}%\nload {load}\nfreq {avg_frequency} GHz (max {max_frequency})"
   },
   "memory": {
     "interval": 1,
@@ -159,6 +179,26 @@
     "on-click-right": "pavucontrol",
     "format-muted": "\uf00d {volume}%"
   },
+  // Nested drawer: hovering the ☰ reveals the ⋯ (plus the tray icons); hovering
+  // the ⋯ expands the USB and power menus. Nothing extra is claimed on the bar.
+  "group/system": {
+    "orientation": "horizontal",
+    "drawer": {
+      "transition-duration": 300,
+      "transition-left-to-right": false
+    },
+    "modules": [
+      "custom/system-toggle",
+      "custom/usb",
+      "custom/power"
+    ]
+  },
+
+  "custom/system-toggle": {
+    "format": "\u22ef",
+    "tooltip-format": "USB + power"
+  },
+
   "group/tray": {
     "orientation": "horizontal",
     "drawer": {
@@ -167,6 +207,7 @@
     },
     "modules": [
       "custom/tray-toggle",
+      "group/system",
       "tray"
     ]
   },

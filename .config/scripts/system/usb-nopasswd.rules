@@ -1,0 +1,8 @@
+# Let wheel members soft-unplug/replug USB devices without a root prompt.
+# usb_menu.sh writes 0/1 to /sys/bus/usb/devices/<dev>/authorized; by default that
+# file is root-owned 0644, which forced a pkexec dialog on every action.
+# Runs on every USB add, so re-plugged/new devices get the same permissions.
+ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", \
+  RUN+="/bin/sh -c 'chgrp wheel /sys/$devpath/authorized; chmod 0660 /sys/$devpath/authorized'"
+
+# Root hubs / already-present devices are handled by the installer's one-shot pass.

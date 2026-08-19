@@ -193,6 +193,7 @@ binds {
     Mod+H hotkey-overlay-title="Toggle waybar" { spawn-sh "pkill -SIGUSR1 waybar"; }
     Mod+B hotkey-overlay-title="Wallpaper picker" { spawn-sh "~/.config/scripts/niri/wallpaper_picker.sh"; }
     Mod+Shift+M hotkey-overlay-title="Monitors menu" { spawn-sh "~/.config/scripts/niri/toggle_monitors.sh"; }
+    Mod+Shift+K hotkey-overlay-title="USB plug/unplug menu" { spawn-sh "bash ~/.config/scripts/system/usb_menu.sh"; }
     Mod+Ctrl+M hotkey-overlay-title="Wake monitors" { power-on-monitors; }
 
     Alt+4  repeat=false { close-window; }
