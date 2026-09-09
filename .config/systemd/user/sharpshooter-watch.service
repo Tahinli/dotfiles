@@ -1,6 +1,0 @@
-[Unit]
-Description=Alert when omp sharpshooter memory extraction fails silently
-
-[Service]
-Type=oneshot
-ExecStart=%h/.omp/agent/bin/sharpshooter-watch.sh
