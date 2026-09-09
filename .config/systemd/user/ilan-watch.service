@@ -1,0 +1,10 @@
+[Unit]
+Description=Check ilan.gov.tr for new "erciyes üniversitesi" ads
+Documentation=file:%h/.local/bin/ilan-watch
+
+[Service]
+Type=oneshot
+# New ads print to the journal; state diffing keeps repeat runs silent.
+# Exit 1 (fetch failure after retries) surfaces in systemctl/journal.
+ExecStart=%h/.local/bin/ilan-watch
+Nice=10

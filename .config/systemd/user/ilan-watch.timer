@@ -1,0 +1,14 @@
+[Unit]
+Description=Poll ilan.gov.tr hourly for new ads
+
+[Timer]
+# Announcements publish a few times per day; hourly is ample. Persistent
+# catches up a missed activation after suspend/shutdown.
+OnCalendar=hourly
+RandomizedDelaySec=5min
+AccuracySec=1min
+Persistent=true
+Unit=ilan-watch.service
+
+[Install]
+WantedBy=timers.target
