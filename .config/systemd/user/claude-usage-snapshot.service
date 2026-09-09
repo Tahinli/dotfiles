@@ -1,0 +1,6 @@
+[Unit]
+Description=Snapshot Claude quota utilization to usage.jsonl
+
+[Service]
+Type=oneshot
+ExecStart=%h/.claude/bin/usage-snapshot.sh

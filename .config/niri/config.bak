@@ -126,6 +126,11 @@ window-rule {
     draw-border-with-background false
 }
 
+window-rule {
+    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+    open-floating true
+}
+
 // Hunt: Showdown — fullscreen so the surface matches the 2560x1440 X screen the
 // game maps input to; floating clamps to the working area (-20px) and offsets clicks
 window-rule {
@@ -149,11 +154,6 @@ workspace "mail"
 workspace "signal"
 
 binds {
-    // >>> jcode launch hotkeys (managed) >>>
-    Super+Semicolon hotkey-overlay-title="jcode: home" { spawn "sh" "-c" "if [ -d '/home/tahinli' ]; then cd '/home/tahinli'; else cd \"$HOME\"; fi; exec 'kitty' '/home/tahinli/.jcode/builds/versions/0.80.0/jcode-linux-x86_64.bin' --spawn-hotkey 'cmd+;'"; }
-    Super+Apostrophe hotkey-overlay-title="jcode: last project" { spawn "sh" "-c" "if [ -d '/home/tahinli' ]; then cd '/home/tahinli'; else cd \"$HOME\"; fi; exec 'kitty' '/home/tahinli/.jcode/builds/versions/0.80.0/jcode-linux-x86_64.bin' --spawn-hotkey 'cmd+'\\'''"; }
-    Super+Shift+Apostrophe hotkey-overlay-title="jcode: self-dev (self-dev)" { spawn "sh" "-c" "if [ -d '/home/tahinli' ]; then cd '/home/tahinli'; else cd \"$HOME\"; fi; exec 'kitty' '/home/tahinli/.jcode/builds/versions/0.80.0/jcode-linux-x86_64.bin' --spawn-hotkey 'cmd+shift+'\\''' self-dev"; }
-    // <<< jcode launch hotkeys (managed) <<<
     Alt+T hotkey-overlay-title="Terminal: wezterm" { spawn-sh "wezterm start --always-new-process"; }
     Alt+Q hotkey-overlay-title="Files: nautilus" { spawn-sh "nautilus --new-window"; }
 

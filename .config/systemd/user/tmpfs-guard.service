@@ -1,0 +1,12 @@
+[Unit]
+Description=Reclaim cargo build output from /tmp when the tmpfs is near full
+Documentation=file:%h/.claude/hooks/tmpfs-guard.sh
+# No-op by design if /tmp is not tmpfs — the script self-disables.
+ConditionPathIsMountPoint=/tmp
+
+[Service]
+Type=oneshot
+ExecStart=%h/.claude/hooks/tmpfs-guard.sh --reclaim
+# Below 75% this exits 0 immediately and logs nothing.
+Nice=10
+IOSchedulingClass=idle

@@ -24,3 +24,11 @@ set --export PATH $BUN_INSTALL/bin $PATH
 
 # Hermes Agent — ensure ~/.local/bin is on PATH
 fish_add_path "$HOME/.local/bin"
+
+# kimi-code
+fish_add_path -g "/home/tahinli/.kimi-code/bin"
+
+# Added by jcode installer
+if not contains "/home/tahinli/.local/bin" $PATH
+    set -gx PATH "/home/tahinli/.local/bin" $PATH
+end
