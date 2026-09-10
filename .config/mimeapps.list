@@ -60,6 +60,7 @@ x-scheme-handler/claude-cli=claude-code-url-handler.desktop
 x-scheme-handler/surrealist=surrealist.desktop
 x-scheme-handler/openhuman=OpenHuman-handler.desktop
 x-scheme-handler/zcode=zcode.desktop
+x-scheme-handler/logseq=logseq.desktop
 
 [Added Associations]
 video/mp4=mpv.desktop;
