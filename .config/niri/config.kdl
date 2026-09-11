@@ -157,6 +157,13 @@ binds {
     Alt+S hotkey-overlay-title="Workspace: deezer" { focus-workspace "deezer"; }
     Alt+Y hotkey-overlay-title="Workspace: youtube" { focus-workspace "youtube"; }
     Alt+P hotkey-overlay-title="Workspace: mail" { focus-workspace "mail"; }
+    Shift+Alt+C hotkey-overlay-title="Launch: zed" { spawn-sh "zed"; }
+    Shift+Alt+G hotkey-overlay-title="Launch: github" { spawn-sh "~/.config/scripts/shared/webapp.sh https://github.com/ FCF18Wmt"; }
+    Shift+Alt+W hotkey-overlay-title="Launch: whatsapp" { spawn-sh "~/.config/scripts/shared/webapp.sh --mullvad https://web.whatsapp.com/ aW2IMaZ8"; }
+    Shift+Alt+D hotkey-overlay-title="Launch: discord" { spawn-sh "flatpak run org.equicord.equibop"; }
+    Shift+Alt+S hotkey-overlay-title="Launch: deezer" { spawn-sh "~/.config/scripts/shared/webapp.sh --mullvad https://deezer.com/ VjW8vTQ3"; }
+    Shift+Alt+Y hotkey-overlay-title="Launch: youtube" { spawn-sh "mullvad-exclude flatpak run io.freetubeapp.FreeTube"; }
+    Shift+Alt+P hotkey-overlay-title="Launch: mail" { spawn-sh "~/.config/scripts/shared/webapp.sh https://mail.proton.me/ eIpzVtL8"; }
 
     Mod+Shift+C { move-column-to-workspace "code"; }
     Mod+Shift+G { move-column-to-workspace "github"; }
