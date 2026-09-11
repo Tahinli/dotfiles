@@ -158,7 +158,6 @@ binds {
     Alt+S hotkey-overlay-title="Workspace: deezer" { spawn-sh "~/.config/scripts/niri/workspace_app.sh deezer ~/.config/scripts/shared/webapp.sh --mullvad https://deezer.com/ VjW8vTQ3"; }
     Alt+Y hotkey-overlay-title="Workspace: youtube" { spawn-sh "~/.config/scripts/niri/workspace_app.sh youtube mullvad-exclude flatpak run io.freetubeapp.FreeTube"; }
     Alt+P hotkey-overlay-title="Workspace: mail" { spawn-sh "~/.config/scripts/niri/workspace_app.sh mail ~/.config/scripts/shared/webapp.sh https://mail.proton.me/ eIpzVtL8"; }
-    Alt+N hotkey-overlay-title="Workspace: signal" { spawn-sh "~/.config/scripts/niri/workspace_app.sh signal flatpak run org.signal.Signal"; }
 
     Mod+Shift+C { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move code"; }
     Mod+Shift+G { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move github"; }
@@ -167,7 +166,6 @@ binds {
     Mod+Shift+S { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move deezer"; }
     Mod+Shift+Y { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move youtube"; }
     Mod+Shift+P { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move mail"; }
-    Mod+Shift+N { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move signal"; }
 
     Super+L hotkey-overlay-title="Lock: hyprlock" { spawn "hyprlock"; }
     Mod+Escape hotkey-overlay-title="Power menu" { spawn-sh "bash ~/.config/scripts/system/power_menu.sh"; }
