@@ -150,21 +150,21 @@ binds {
     Alt+F hotkey-overlay-title="Browser" { spawn-sh "flatpak run io.github.ungoogled_software.ungoogled_chromium --enable-features=MiddleClickAutoscroll"; }
     Shift+Alt+F hotkey-overlay-title="Browser (incognito, outside VPN)" { spawn-sh "mullvad-exclude flatpak run org.chromium.Chromium --incognito --enable-features=MiddleClickAutoscroll,AllowLegacyMV2Extensions --disable-features=ExtensionManifestV2Unsupported,ExtensionManifestV2Disabled,ExtensionsManifestV3Only"; }
 
-    Alt+C hotkey-overlay-title="Workspace: code" { spawn-sh "~/.config/scripts/niri/workspace_app.sh code zed"; }
-    Alt+G hotkey-overlay-title="Workspace: github" { spawn-sh "~/.config/scripts/niri/workspace_app.sh github ~/.config/scripts/shared/webapp.sh https://github.com/ FCF18Wmt"; }
-    Alt+W hotkey-overlay-title="Workspace: whatsapp" { spawn-sh "~/.config/scripts/niri/workspace_app.sh whatsapp ~/.config/scripts/shared/webapp.sh --mullvad https://web.whatsapp.com/ aW2IMaZ8"; }
-    Alt+D hotkey-overlay-title="Workspace: discord" { spawn-sh "~/.config/scripts/niri/workspace_app.sh discord flatpak run org.equicord.equibop"; }
-    Alt+S hotkey-overlay-title="Workspace: deezer" { spawn-sh "~/.config/scripts/niri/workspace_app.sh deezer ~/.config/scripts/shared/webapp.sh --mullvad https://deezer.com/ VjW8vTQ3"; }
-    Alt+Y hotkey-overlay-title="Workspace: youtube" { spawn-sh "~/.config/scripts/niri/workspace_app.sh youtube mullvad-exclude flatpak run io.freetubeapp.FreeTube"; }
-    Alt+P hotkey-overlay-title="Workspace: mail" { spawn-sh "~/.config/scripts/niri/workspace_app.sh mail ~/.config/scripts/shared/webapp.sh https://mail.proton.me/ eIpzVtL8"; }
+    Alt+C hotkey-overlay-title="Workspace: code" { focus-workspace "code"; }
+    Alt+G hotkey-overlay-title="Workspace: github" { focus-workspace "github"; }
+    Alt+W hotkey-overlay-title="Workspace: whatsapp" { focus-workspace "whatsapp"; }
+    Alt+D hotkey-overlay-title="Workspace: discord" { focus-workspace "discord"; }
+    Alt+S hotkey-overlay-title="Workspace: deezer" { focus-workspace "deezer"; }
+    Alt+Y hotkey-overlay-title="Workspace: youtube" { focus-workspace "youtube"; }
+    Alt+P hotkey-overlay-title="Workspace: mail" { focus-workspace "mail"; }
 
-    Mod+Shift+C { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move code"; }
-    Mod+Shift+G { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move github"; }
-    Mod+Shift+W { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move whatsapp"; }
-    Mod+Shift+D { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move discord"; }
-    Mod+Shift+S { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move deezer"; }
-    Mod+Shift+Y { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move youtube"; }
-    Mod+Shift+P { spawn-sh "~/.config/scripts/niri/workspace_app.sh --move mail"; }
+    Mod+Shift+C { move-column-to-workspace "code"; }
+    Mod+Shift+G { move-column-to-workspace "github"; }
+    Mod+Shift+W { move-column-to-workspace "whatsapp"; }
+    Mod+Shift+D { move-column-to-workspace "discord"; }
+    Mod+Shift+S { move-column-to-workspace "deezer"; }
+    Mod+Shift+Y { move-column-to-workspace "youtube"; }
+    Mod+Shift+P { move-column-to-workspace "mail"; }
 
     Super+L hotkey-overlay-title="Lock: hyprlock" { spawn "hyprlock"; }
     Mod+Escape hotkey-overlay-title="Power menu" { spawn-sh "bash ~/.config/scripts/system/power_menu.sh"; }
