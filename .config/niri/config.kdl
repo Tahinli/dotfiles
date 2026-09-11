@@ -133,7 +133,6 @@ workspace "discord"
 workspace "deezer"
 workspace "youtube"
 workspace "mail"
-workspace "signal"
 
 binds {
     Alt+T hotkey-overlay-title="Terminal: wezterm" { spawn-sh "wezterm start --always-new-process"; }
