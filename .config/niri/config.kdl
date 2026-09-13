@@ -78,7 +78,7 @@ layout {
         width 3
 
         // WALLUST-GRADIENT
-        active-gradient from="#4D0830" to="#7E420A" angle=90 in="oklch"
+        active-gradient from="#9B1A1A" to="#FCAE03" angle=90 in="oklch"
 
         inactive-color "#595959aa"
         urgent-color "#9b0000"
@@ -126,14 +126,27 @@ window-rule {
     draw-border-with-background false
 }
 
-workspace "code"
-workspace "github"
-workspace "whatsapp"
-workspace "discord"
-workspace "deezer"
-workspace "youtube"
-workspace "mail"
-
+workspace "code" {
+    hidden
+}
+workspace "github" {
+    hidden
+}
+workspace "whatsapp" {
+    hidden
+}
+workspace "discord" {
+    hidden
+}
+workspace "deezer" {
+    hidden
+}
+workspace "youtube" {
+    hidden
+}
+workspace "mail" {
+    hidden
+}
 binds {
     Alt+T hotkey-overlay-title="Terminal: wezterm" { spawn-sh "wezterm start --always-new-process"; }
     Alt+Q hotkey-overlay-title="Files: nautilus" { spawn-sh "nautilus --new-window"; }
