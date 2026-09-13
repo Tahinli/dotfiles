@@ -226,6 +226,14 @@ binds {
     Mod+Shift+E { move-column-to-monitor "HDMI-A-1"; }
     Mod+Ctrl+Shift+Q hotkey-overlay-title="Move workspace: DP-1" { move-workspace-to-monitor "DP-1"; }
     Mod+Ctrl+Shift+E hotkey-overlay-title="Move workspace: HDMI-A-1" { move-workspace-to-monitor "HDMI-A-1"; }
+    Mod+Ctrl+Shift+A hotkey-overlay-title="Move workspace left" { move-workspace-to-monitor-left; }
+    Mod+Ctrl+Shift+D hotkey-overlay-title="Move workspace right" { move-workspace-to-monitor-right; }
+    Mod+Ctrl+Shift+W hotkey-overlay-title="Move workspace up" { move-workspace-to-monitor-up; }
+    Mod+Ctrl+Shift+S hotkey-overlay-title="Move workspace down" { move-workspace-to-monitor-down; }
+    Mod+Ctrl+Shift+Left  { move-workspace-to-monitor-left; }
+    Mod+Ctrl+Shift+Right { move-workspace-to-monitor-right; }
+    Mod+Ctrl+Shift+Up    { move-workspace-to-monitor-up; }
+    Mod+Ctrl+Shift+Down  { move-workspace-to-monitor-down; }
 
 
     // Left-hand WASD navigation (right hand stays on mouse)
