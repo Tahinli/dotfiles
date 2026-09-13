@@ -2,11 +2,43 @@
 # Single-source writer: poll playerctl, write the formatted song-detail line
 # to /tmp/song_detail_last so every waybar bar can stream it via `tail -F`
 # without two scripts racing on shared /tmp state.
+#
+# niri spawn-at-startup re-runs on compositor restart and used to stack
+# copies; orphans then `mv`-replaced the output inode every second, which
+# makes waybar's `tail -F` reopen and flicker. Newest instance takes over;
+# the tailed file is rewritten in place so its inode stays put.
 
 OUTPUT_FILE="/tmp/song_detail_last"
 POSITION_CACHE_PREFIX="/tmp/playerctl_position_cache_"
 ACTIVITY_PREFIX="/tmp/playerctl_activity_"
+LOCK_FILE="/tmp/song_detail_writer.lock"
+PID_FILE="/tmp/song_detail_writer.pid"
 INTERVAL=1
+EMPTY_GRACE=3
+
+takeover_singleton() {
+    local pid
+    while read -r pid; do
+        [[ -z "$pid" || "$pid" == "$$" ]] && continue
+        kill "$pid" 2>/dev/null || true
+    done < <(pgrep -f '/scripts/shared/song_detail_writer.sh' || true)
+    local i
+    for i in 1 2 3 4 5 6 7 8 9 10; do
+        local leftover=0
+        while read -r pid; do
+            [[ -z "$pid" || "$pid" == "$$" ]] && continue
+            leftover=1
+            kill "$pid" 2>/dev/null || true
+        done < <(pgrep -f '/scripts/shared/song_detail_writer.sh' || true)
+        (( leftover == 0 )) && break
+        sleep 0.05
+    done
+    exec 8>"$LOCK_FILE"
+    flock -n 8 || exit 0
+    printf '%s\n' "$$" > "$PID_FILE"
+}
+
+takeover_singleton
 
 atomic_write() {
     local target="$1" content="$2" tmp
@@ -14,15 +46,40 @@ atomic_write() {
     printf '%s\n' "$content" > "$tmp" && mv -f "$tmp" "$target"
 }
 
-last_emit="__init__"
-emit() {
-    local out="$1"
-    [[ "$out" == "$last_emit" ]] && return
-    atomic_write "$OUTPUT_FILE" "$out" && last_emit="$out"
+# Same inode so `tail -F` does not observe a replace/unlink.
+write_output() {
+    printf '%s\n' "$1" > "$OUTPUT_FILE"
 }
 
-# Ensure file exists immediately so `tail -F` doesn't sit empty on startup.
-atomic_write "$OUTPUT_FILE" ""
+last_emit="__init__"
+empty_streak=0
+last_position=""
+last_track=""
+
+emit() {
+    local out="$1"
+    if [[ -z "$out" ]]; then
+        empty_streak=$((empty_streak + 1))
+        if (( empty_streak < EMPTY_GRACE )); then
+            return
+        fi
+    else
+        empty_streak=0
+    fi
+    [[ "$out" == "$last_emit" ]] && return
+    write_output "$out" && last_emit="$out"
+}
+
+pango_escape() {
+    local s="$1"
+    s="${s//&/&amp;}"
+    s="${s//</&lt;}"
+    s="${s//>/&gt;}"
+    printf '%s' "$s"
+}
+
+# File must exist so `tail -F` can attach; do not wipe a live line.
+[[ -e "$OUTPUT_FILE" ]] || : > "$OUTPUT_FILE"
 
 while true; do
     if ! command -v playerctl &>/dev/null; then
@@ -96,7 +153,7 @@ while true; do
     fi
 
     duration=""
-    if [[ -n "$duration_us" && "$duration_us" -gt 0 ]] 2>/dev/null; then
+    if [[ "$duration_us" =~ ^[0-9]+$ ]]; then
         duration_sec=$((duration_us / 1000000))
         minutes=$((duration_sec / 60))
         seconds=$((duration_sec % 60))
@@ -105,13 +162,21 @@ while true; do
 
     POSITION_CACHE="${POSITION_CACHE_PREFIX}$(sanitize "$chosen")"
     position=""
+    track_id="$chosen|$artist|$title|$duration"
+    if [[ "$track_id" != "$last_track" ]]; then
+        last_position=""
+        last_track="$track_id"
+    fi
     if [[ "$status" == "Playing" ]]; then
-        if [[ -n "$position_us" && "$position_us" -gt 0 ]] 2>/dev/null; then
+        if [[ "$position_us" =~ ^[0-9]+$ ]]; then
             position_sec=$((position_us / 1000000))
             pos_minutes=$((position_sec / 60))
             pos_seconds=$((position_sec % 60))
             position=$(printf "%02d:%02d" $pos_minutes $pos_seconds)
             atomic_write "$POSITION_CACHE" "$position"
+            last_position="$position"
+        elif [[ -n "$last_position" ]]; then
+            position="$last_position"
         fi
     else
         if [[ -f "$POSITION_CACHE" ]]; then
@@ -119,8 +184,8 @@ while true; do
         fi
     fi
 
-    artist="${artist//&/&amp;}"
-    title="${title//&/&amp;}"
+    artist=$(pango_escape "$artist")
+    title=$(pango_escape "$title")
 
     if [[ -n "$artist" && -n "$title" && -n "$duration" && -n "$position" ]]; then
         out="$icon $artist - $title ($position / $duration)"

@@ -224,8 +224,6 @@ binds {
     Mod+E       { focus-monitor "HDMI-A-1"; }
     Mod+Shift+Q { move-column-to-monitor "DP-1"; }
     Mod+Shift+E { move-column-to-monitor "HDMI-A-1"; }
-    Mod+Ctrl+Shift+Q hotkey-overlay-title="Move workspace: DP-1" { move-workspace-to-monitor "DP-1"; }
-    Mod+Ctrl+Shift+E hotkey-overlay-title="Move workspace: HDMI-A-1" { move-workspace-to-monitor "HDMI-A-1"; }
     Mod+Ctrl+Shift+A hotkey-overlay-title="Move workspace left" { move-workspace-to-monitor-left; }
     Mod+Ctrl+Shift+D hotkey-overlay-title="Move workspace right" { move-workspace-to-monitor-right; }
     Mod+Ctrl+Shift+W hotkey-overlay-title="Move workspace up" { move-workspace-to-monitor-up; }
