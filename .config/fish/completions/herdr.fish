@@ -173,7 +173,6 @@ unknown\t''"
 complete -c herdr -n "__fish_herdr_using_subcommand agent; and __fish_seen_subcommand_from wait" -l timeout -d 'Fail after this many milliseconds' -r
 complete -c herdr -n "__fish_herdr_using_subcommand agent; and __fish_seen_subcommand_from attach" -l takeover
 complete -c herdr -n "__fish_herdr_using_subcommand agent; and __fish_seen_subcommand_from start" -l kind -d 'Supported agent kind and canonical executable' -r -f -a "pi\t''
-claude\t''
 codex\t''
 gemini\t''
 cursor\t''
