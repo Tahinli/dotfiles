@@ -46,9 +46,12 @@ atomic_write() {
     printf '%s\n' "$content" > "$tmp" && mv -f "$tmp" "$target"
 }
 
-# Same inode so `tail -F` does not observe a replace/unlink.
+# Append-only stream. tail -F is offset-based: an in-place rewrite whose new
+# content is the SAME BYTE LENGTH as the old (icon flip, position tick) is
+# invisible to it — the bar goes stale until some longer line happens by.
+# Appending keeps the inode put and delivers every state change.
 write_output() {
-    printf '%s\n' "$1" > "$OUTPUT_FILE"
+    printf '%s\n' "$1" >> "$OUTPUT_FILE"
 }
 
 last_emit="__init__"
@@ -80,6 +83,11 @@ pango_escape() {
 
 # File must exist so `tail -F` can attach; do not wipe a live line.
 [[ -e "$OUTPUT_FILE" ]] || : > "$OUTPUT_FILE"
+
+# Append-mode log grows with every emitted line; keep only the newest once large.
+if [[ -f "$OUTPUT_FILE" ]] && (( $(stat -c %s "$OUTPUT_FILE" 2>/dev/null || echo 0) > 1048576 )); then
+    tail -n 1 "$OUTPUT_FILE" > "$OUTPUT_FILE.trim" && mv -f "$OUTPUT_FILE.trim" "$OUTPUT_FILE"
+fi
 
 while true; do
     if ! command -v playerctl &>/dev/null; then
