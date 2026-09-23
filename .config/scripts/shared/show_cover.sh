@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get cover art URL from playerctl
-cover_url=$(playerctl metadata mpris:artUrl 2>/dev/null)
+cover_url=$(bash ~/.config/scripts/shared/playerctl-active.sh metadata mpris:artUrl 2>/dev/null)
 
 if [[ -z "$cover_url" ]]; then
     notify-send "No cover art available"

@@ -96,7 +96,7 @@
 
 ;; Music widget - click to play/pause, right-click to show cover
 (defwidget music-widget []
-   (eventbox :onclick "playerctl play-pause"
+   (eventbox :onclick "bash ~/.config/scripts/shared/playerctl-active.sh play-pause"
              :onrightclick "bash ~/.config/scripts/shared/show_cover.sh"
              :class "music-box"
      (label :text music)))
