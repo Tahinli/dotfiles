@@ -79,7 +79,8 @@
 
   "custom/music": {
     "format": "{}",
-    "exec": "tail -n 1 -F /tmp/song_detail_last 2>/dev/null",
+    "exec": "cat /tmp/song_detail_last 2>/dev/null",
+    "interval": 1,
     "on-click": "bash ~/.config/scripts/shared/playerctl-active.sh play-pause",
     "on-click-right": "bash ~/.config/scripts/shared/show_cover.sh",
     "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+",

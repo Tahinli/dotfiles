@@ -1,12 +1,15 @@
 #!/bin/bash
 # Single-source writer: poll playerctl, write the formatted song-detail line
-# to /tmp/song_detail_last so every waybar bar can stream it via `tail -F`
+# to /tmp/song_detail_last so every consumer (waybar, eww, hyprlock) reads it
 # without two scripts racing on shared /tmp state.
 #
+# The file holds ONLY the current line: no history, no persistence. Every
+# write truncates in place, so the inode stays put and readers that re-read
+# the file each interval always see the live line. Whatever was in the file
+# before — including a leftover in-place log from an older build — is dropped.
+#
 # niri spawn-at-startup re-runs on compositor restart and used to stack
-# copies; orphans then `mv`-replaced the output inode every second, which
-# makes waybar's `tail -F` reopen and flicker. Newest instance takes over;
-# the tailed file is rewritten in place so its inode stays put.
+# copies; newest instance takes over (singleton below).
 
 OUTPUT_FILE="/tmp/song_detail_last"
 POSITION_CACHE_PREFIX="/tmp/playerctl_position_cache_"
@@ -46,12 +49,15 @@ atomic_write() {
     printf '%s\n' "$content" > "$tmp" && mv -f "$tmp" "$target"
 }
 
-# Append-only stream. tail -F is offset-based: an in-place rewrite whose new
-# content is the SAME BYTE LENGTH as the old (icon flip, position tick) is
-# invisible to it — the bar goes stale until some longer line happens by.
-# Appending keeps the inode put and delivers every state change.
+# Current line only. Truncate in place (same inode, same path) so a reader
+# that re-reads the file every interval gets the new content and never sees
+# a pile of old lines. Empty state = empty file.
 write_output() {
-    printf '%s\n' "$1" >> "$OUTPUT_FILE"
+    if [[ -z "$1" ]]; then
+        : > "$OUTPUT_FILE"
+    else
+        printf '%s\n' "$1" > "$OUTPUT_FILE"
+    fi
 }
 
 last_emit="__init__"
@@ -81,12 +87,12 @@ pango_escape() {
     printf '%s' "$s"
 }
 
-# File must exist so `tail -F` can attach; do not wipe a live line.
-[[ -e "$OUTPUT_FILE" ]] || : > "$OUTPUT_FILE"
-
-# Append-mode log grows with every emitted line; keep only the newest once large.
-if [[ -f "$OUTPUT_FILE" ]] && (( $(stat -c %s "$OUTPUT_FILE" 2>/dev/null || echo 0) > 1048576 )); then
-    tail -n 1 "$OUTPUT_FILE" > "$OUTPUT_FILE.trim" && mv -f "$OUTPUT_FILE.trim" "$OUTPUT_FILE"
+# File must exist for readers. Carry over at most the current line — any
+# accumulated log from an older append-mode build is dropped here.
+if [[ -s "$OUTPUT_FILE" ]]; then
+    printf '%s\n' "$(tail -n 1 "$OUTPUT_FILE")" > "$OUTPUT_FILE"
+else
+    : > "$OUTPUT_FILE"
 fi
 
 while true; do
